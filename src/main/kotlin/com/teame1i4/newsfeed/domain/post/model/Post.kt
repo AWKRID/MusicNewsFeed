@@ -52,6 +52,7 @@ class Post(
     var createdAt: LocalDateTime = LocalDateTime.now()
 
     @LastModifiedDate
+    @Column(nullable = false)
     var updatedAt: LocalDateTime = LocalDateTime.now()
 
     fun updatePost(title: String, userId: Long, musicUrl: String, content: String) {

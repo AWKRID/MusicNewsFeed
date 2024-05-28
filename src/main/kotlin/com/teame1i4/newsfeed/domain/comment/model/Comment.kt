@@ -29,6 +29,7 @@ class Comment(
     var createdAt: LocalDateTime = LocalDateTime.now()
 
     @LastModifiedDate
+    @Column(nullable = false)
     var updatedAt: LocalDateTime = LocalDateTime.now()
 
     fun toResponse(): CommentResponse = CommentResponse(
