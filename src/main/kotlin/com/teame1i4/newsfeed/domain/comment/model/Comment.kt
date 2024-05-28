@@ -34,7 +34,7 @@ class Comment(
 
     fun toResponse(): CommentResponse = CommentResponse(
         id = id!!,
-        userName = "" ,
+        username = "" ,
         content = content,
         createdAt = createdAt,
         updatedAt = updatedAt
