@@ -8,6 +8,6 @@ data class PostResponse(
     val writer: String,
     val musicUrl: String,
     val content: String,
-    val timeCreated: LocalDateTime,
-    val timeUpdated: LocalDateTime,
+    val createdAt: LocalDateTime,
+    val updatedAt: LocalDateTime,
 )

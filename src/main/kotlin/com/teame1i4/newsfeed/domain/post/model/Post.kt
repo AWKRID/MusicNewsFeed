@@ -2,8 +2,13 @@ package com.teame1i4.newsfeed.domain.post.model
 
 import com.teame1i4.newsfeed.domain.post.dto.PostResponse
 import jakarta.persistence.*
+import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.time.LocalDateTime
 
+
+@EntityListeners(AuditingEntityListener::class)
 @Entity
 @Table(name = "post")
 class Post(
@@ -42,6 +47,14 @@ class Post(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
 
+    @CreatedDate
+    @Column(updatable = false, nullable = false)
+    var createdAt: LocalDateTime = LocalDateTime.now()
+
+    @LastModifiedDate
+    @Column(nullable = false)
+    var updatedAt: LocalDateTime = LocalDateTime.now()
+
     fun updatePost(title: String, userId: Long, musicUrl: String, content: String) {
         this.title = title
         this.userId = userId
@@ -58,8 +71,8 @@ fun Post.toResponse(): PostResponse {
         musicUrl = musicUrl,
         // TODO(need to update)
         writer = "username for id $userId",
-        timeCreated = LocalDateTime.now(),
-        timeUpdated = LocalDateTime.now()
+        createdAt = createdAt,
+        updatedAt = updatedAt
         //
     )
 }
