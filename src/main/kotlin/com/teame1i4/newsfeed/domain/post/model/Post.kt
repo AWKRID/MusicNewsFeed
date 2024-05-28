@@ -1,6 +1,8 @@
 package com.teame1i4.newsfeed.domain.post.model
 
+import com.teame1i4.newsfeed.domain.comment.model.Comment
 import com.teame1i4.newsfeed.domain.post.dto.PostResponse
+import com.teame1i4.newsfeed.domain.post.dto.PostWithCommentResponse
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
@@ -55,11 +57,23 @@ class Post(
     @Column(nullable = false)
     var updatedAt: LocalDateTime = LocalDateTime.now()
 
+
+    @OneToMany(mappedBy = "post")
+    var comments: MutableList<Comment> = mutableListOf()
+
     fun updatePost(title: String, userId: Long, musicUrl: String, content: String) {
         this.title = title
         this.userId = userId
         this.musicUrl = musicUrl
         this.content = content
+    }
+
+    fun createComment(comment: Comment) {
+        this.comments.add(comment)
+    }
+
+    fun deleteComment(comment: Comment) {
+        this.comments.remove(comment)
     }
 }
 
@@ -70,9 +84,16 @@ fun Post.toResponse(): PostResponse {
         content = content,
         musicUrl = musicUrl,
         // TODO(need to update)
-        writer = "username for id $userId",
+        username = "username for id $userId",
         createdAt = createdAt,
         updatedAt = updatedAt
         //
     )
 }
+
+fun Post.toWithCommentResponse(): PostWithCommentResponse = PostWithCommentResponse(
+    id = id!!, title = title, content = content,
+    musicUrl = musicUrl, username = "username for id $userId",
+    createdAt = createdAt, updatedAt = updatedAt,
+    comments = comments.map { it.toResponse() }
+)

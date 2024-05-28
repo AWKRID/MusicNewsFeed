@@ -1,10 +1,13 @@
 package com.teame1i4.newsfeed.domain.post.service
 
+import com.teame1i4.newfeed.domain.exception.ModelNotFoundException
 import com.teame1i4.newsfeed.domain.post.dto.CreatePostRequest
 import com.teame1i4.newsfeed.domain.post.dto.PostResponse
+import com.teame1i4.newsfeed.domain.post.dto.PostWithCommentResponse
 import com.teame1i4.newsfeed.domain.post.dto.UpdatePostRequest
 import com.teame1i4.newsfeed.domain.post.model.Post
 import com.teame1i4.newsfeed.domain.post.model.toResponse
+import com.teame1i4.newsfeed.domain.post.model.toWithCommentResponse
 import com.teame1i4.newsfeed.domain.post.repository.PostRepository
 import jakarta.transaction.Transactional
 import org.springframework.data.repository.findByIdOrNull
@@ -28,13 +31,13 @@ class PostService(
 
     @Transactional
     fun deletePost(postId: Long) {
-        val post: Post = postRepository.findByIdOrNull(postId) ?: throw IllegalArgumentException("postId not found")
+        val post: Post = postRepository.findByIdOrNull(postId) ?: throw ModelNotFoundException("Post", postId)
         postRepository.delete(post)
     }
 
     @Transactional
     fun updatePost(postId: Long, request: UpdatePostRequest): PostResponse {
-        val post = postRepository.findByIdOrNull(postId) ?: throw IllegalArgumentException()
+        val post = postRepository.findByIdOrNull(postId) ?: throw ModelNotFoundException("Post", postId)
 
         post.updatePost(request.title, request.userId, request.musicUrl, request.content)
 
@@ -46,8 +49,8 @@ class PostService(
         return posts.map { it.toResponse() }
     }
 
-    fun getPostById(postId: Long): PostResponse {
-        val post: Post = postRepository.findByIdOrNull(postId) ?: throw IllegalArgumentException("postId not found")
-        return post.toResponse()
+    fun getPostById(postId: Long): PostWithCommentResponse {
+        val post: Post = postRepository.findByIdOrNull(postId) ?: throw ModelNotFoundException("Post", postId)
+        return post.toWithCommentResponse()
     }
 }

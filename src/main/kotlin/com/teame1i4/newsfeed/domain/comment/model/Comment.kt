@@ -1,6 +1,7 @@
 package com.teame1i4.newsfeed.domain.comment.model
 
 import com.teame1i4.newsfeed.domain.comment.dto.response.CommentResponse
+import com.teame1i4.newsfeed.domain.post.model.Post
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
@@ -17,8 +18,9 @@ class Comment(
     @Column(name = "user_Id", nullable = false)
     val userId: Long,
 
-    @Column(name = "post_id", nullable = false)
-    val postId: Long
+    @ManyToOne
+    @JoinColumn(name = "post_id")
+    val post: Post
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,6 +33,7 @@ class Comment(
     @LastModifiedDate
     @Column(nullable = false)
     var updatedAt: LocalDateTime = LocalDateTime.now()
+
 
     fun toResponse(): CommentResponse = CommentResponse(
         id = id!!,

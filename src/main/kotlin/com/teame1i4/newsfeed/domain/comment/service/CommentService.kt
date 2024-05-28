@@ -1,5 +1,6 @@
 package com.teame1i4.newsfeed.domain.comment.service
 
+import com.teame1i4.newfeed.domain.exception.ModelNotFoundException
 import com.teame1i4.newsfeed.domain.comment.dto.request.CreateCommentRequest
 import com.teame1i4.newsfeed.domain.comment.dto.request.UpdateCommentRequest
 import com.teame1i4.newsfeed.domain.comment.dto.response.CommentResponse
@@ -18,12 +19,12 @@ class CommentService(
 ) {
     @Transactional
     fun createComment(postId: Long, request: CreateCommentRequest): CommentResponse {
-        val post = postRepository.findByIdOrNull(postId) ?: throw RuntimeException("Post not found")
+        val post = postRepository.findByIdOrNull(postId) ?: throw ModelNotFoundException("Post", postId)
 
         val comment = Comment(
             userId = request.userId,
             content = request.content,
-            postId = postId
+            post = post
         )
         post.createComment(comment)
         commentRepository.save(comment)
@@ -38,7 +39,7 @@ class CommentService(
         request: UpdateCommentRequest
     ): CommentResponse {
         val comment =
-            commentRepository.findByPostIdAndId(postId, commentId) ?: throw RuntimeException("Comment not found")
+            commentRepository.findByPostIdAndId(postId, commentId) ?: throw ModelNotFoundException("Comment", commentId)
 
         val (content) = request
         comment.content = content
@@ -48,8 +49,8 @@ class CommentService(
 
     @Transactional
     fun deleteComment(postId: Long, commentId: Long) {
-        val post = postRepository.findByIdOrNull(postId) ?: throw RuntimeException("Post not found")
-        val comment = commentRepository.findByIdOrNull(commentId) ?: throw RuntimeException("Comment not found")
+        val post = postRepository.findByIdOrNull(postId) ?: throw ModelNotFoundException("Post", postId)
+        val comment = commentRepository.findByIdOrNull(commentId) ?: throw ModelNotFoundException("Comment", commentId)
         post.deleteComment(comment)
         commentRepository.delete(comment)
     }
