@@ -15,6 +15,13 @@ class PostController(
     private val postService: PostService
 ) {
 
+    @GetMapping("")
+    fun getPosts() : ResponseEntity<List<PostResponse>> {
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(postService.getPosts())
+    }
+
     @GetMapping("/{postId}")
     fun getPost(@PathVariable postId: Long): ResponseEntity<PostResponse> {
         return ResponseEntity
