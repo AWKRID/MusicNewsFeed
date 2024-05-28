@@ -15,6 +15,13 @@ class PostController(
     private val postService: PostService
 ) {
 
+    @GetMapping("")
+    fun getPosts() : ResponseEntity<List<PostResponse>> {
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(postService.getPosts())
+    }
+
     @PostMapping
     fun createPost(@RequestBody createPostRequest: CreatePostRequest): ResponseEntity<PostResponse> {
         return ResponseEntity

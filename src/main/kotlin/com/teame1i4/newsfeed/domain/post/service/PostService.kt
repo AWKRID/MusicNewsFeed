@@ -21,4 +21,8 @@ class PostService {
         // 포스트를 요청에따라 업데이트하고 DB에 저장한 뒤 Response Dto로 반환
         TODO()
     }
+
+    fun getPosts(): List<PostResponse> {
+        TODO()
+    }
 }
