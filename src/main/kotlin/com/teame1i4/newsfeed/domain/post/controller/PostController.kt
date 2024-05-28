@@ -16,7 +16,7 @@ class PostController(
 ) {
 
     @GetMapping("")
-    fun getPosts() : ResponseEntity<List<PostResponse>> {
+    fun getPosts(): ResponseEntity<List<PostResponse>> {
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(postService.getPosts())
@@ -38,14 +38,17 @@ class PostController(
     }
 
     @DeleteMapping("/{postId}")
-    fun deletePost(@PathVariable(value = "postId") id: Long) : ResponseEntity<Unit> {
+    fun deletePost(@PathVariable(value = "postId") id: Long): ResponseEntity<Unit> {
         return ResponseEntity
             .status(HttpStatus.NO_CONTENT)
-            .body(postService.deletePost(id ))
+            .body(postService.deletePost(id))
     }
 
     @PutMapping("/{postId}")
-    fun updatePost(@PathVariable postId: Long, @RequestBody updatePostRequest: UpdatePostRequest): ResponseEntity<PostResponse> {
+    fun updatePost(
+        @PathVariable postId: Long,
+        @RequestBody updatePostRequest: UpdatePostRequest
+    ): ResponseEntity<PostResponse> {
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(postService.updatePost(postId, updatePostRequest))

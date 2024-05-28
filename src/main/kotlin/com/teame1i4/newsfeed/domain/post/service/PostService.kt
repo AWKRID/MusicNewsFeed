@@ -8,8 +8,14 @@ import org.springframework.stereotype.Service
 @Service
 class PostService {
 
-    fun createPost(createPostRequest: CreatePostRequest): PostResponse? {
-        TODO("Not yet implemented")
+    fun createPost(request: CreatePostRequest): PostResponse {
+        val post = Post(
+            title = request.title,
+            content = request.content,
+            musicUrl = request.musicUrl,
+            userId = request.userId,
+        )
+        return postRepository.save(post).toResponse()
 
     }
 
