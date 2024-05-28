@@ -4,9 +4,10 @@ import com.teame1i4.newsfeed.domain.comment.dto.response.CommentResponse
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.time.LocalDateTime
 
-
+@EntityListeners(AuditingEntityListener::class)
 @Entity
 @Table(name = "comment")
 class Comment(
@@ -23,20 +24,19 @@ class Comment(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
 
-    @CreatedDate()
-    @Column(name = "time_created")
-    var timeCreated: LocalDateTime? = null
+    @CreatedDate
+    @Column(updatable = false, nullable = false)
+    var createdAt: LocalDateTime = LocalDateTime.now()
 
-    @LastModifiedDate()
-    @Column(name = "time_updated")
-    var timeUpdated: LocalDateTime? = null
+    @LastModifiedDate
+    var updatedAt: LocalDateTime = LocalDateTime.now()
 
     fun toResponse(): CommentResponse = CommentResponse(
         id = id!!,
         userName = "" ,
         content = content,
-        timeCreated = timeCreated,
-        timeUpdated = timeUpdated
+        createdAt = createdAt,
+        updatedAt = updatedAt
     )
 }
 

@@ -6,6 +6,6 @@ data class CommentResponse(
     val id: Long,
     val userName: String,
     val content: String,
-    val timeCreated: LocalDateTime?,
-    val timeUpdated: LocalDateTime?
+    val createdAt: LocalDateTime?,
+    val updatedAt: LocalDateTime?
     )
