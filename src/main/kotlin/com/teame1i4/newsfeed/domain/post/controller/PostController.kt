@@ -3,6 +3,7 @@ package com.teame1i4.newsfeed.domain.post.controller
 
 import com.teame1i4.newsfeed.domain.post.dto.CreatePostRequest
 import com.teame1i4.newsfeed.domain.post.dto.PostResponse
+import com.teame1i4.newsfeed.domain.post.dto.PostWithCommentResponse
 import com.teame1i4.newsfeed.domain.post.dto.UpdatePostRequest
 import com.teame1i4.newsfeed.domain.post.service.PostService
 import org.springframework.http.HttpStatus
@@ -23,7 +24,7 @@ class PostController(
     }
 
     @GetMapping("/{postId}")
-    fun getPost(@PathVariable postId: Long): ResponseEntity<PostResponse> {
+    fun getPost(@PathVariable postId: Long): ResponseEntity<PostWithCommentResponse> {
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(postService.getPostById(postId))

@@ -1,11 +1,11 @@
-package com.teamsparta.todolist.domain.exception
+package com.teame1i4.newsfeed.domain.exception
 
-import com.teamsparta.todolist.domain.exception.dto.ErrorResponse
+import com.teame1i4.newfeed.domain.exception.ModelNotFoundException
+import com.teame1i4.newsfeed.domain.exception.dto.ErrorResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 
 import org.springframework.web.bind.annotation.ExceptionHandler
-import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.bind.annotation.RestControllerAdvice
 
 @RestControllerAdvice
