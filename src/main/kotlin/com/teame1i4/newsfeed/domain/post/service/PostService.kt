@@ -3,10 +3,17 @@ package com.teame1i4.newsfeed.domain.post.service
 import com.teame1i4.newsfeed.domain.post.dto.CreatePostRequest
 import com.teame1i4.newsfeed.domain.post.dto.PostResponse
 import com.teame1i4.newsfeed.domain.post.dto.UpdatePostRequest
+import com.teame1i4.newsfeed.domain.post.model.Post
+import com.teame1i4.newsfeed.domain.post.model.toResponse
+import com.teame1i4.newsfeed.domain.post.repository.PostRepository
+import jakarta.transaction.Transactional
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
 @Service
-class PostService {
+class PostService(
+    private val postRepository: PostRepository
+) {
 
     fun createPost(request: CreatePostRequest): PostResponse {
         val post = Post(
@@ -19,20 +26,28 @@ class PostService {
 
     }
 
-    fun deletePost(id: Long) : Unit {
-        TODO("not implemented")
+    @Transactional
+    fun deletePost(postId: Long) {
+        val post: Post = postRepository.findByIdOrNull(postId) ?: throw IllegalArgumentException("postId not found")
+        postRepository.delete(post)
     }
 
+    @Transactional
     fun updatePost(postId: Long, request: UpdatePostRequest): PostResponse {
-        // 포스트를 요청에따라 업데이트하고 DB에 저장한 뒤 Response Dto로 반환
-        TODO()
+        val post = postRepository.findByIdOrNull(postId) ?: throw IllegalArgumentException()
+
+        post.updatePost(request.title, request.userId, request.musicUrl, request.content)
+
+        return postRepository.save(post).toResponse()
     }
 
     fun getPosts(): List<PostResponse> {
-        TODO()
+        val posts: List<Post> = postRepository.findAll()
+        return posts.map { it.toResponse() }
     }
 
     fun getPostById(postId: Long): PostResponse {
-        TODO()
+        val post: Post = postRepository.findByIdOrNull(postId) ?: throw IllegalArgumentException("postId not found")
+        return post.toResponse()
     }
 }
