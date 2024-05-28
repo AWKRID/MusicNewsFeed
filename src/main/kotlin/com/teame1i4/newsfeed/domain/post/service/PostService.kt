@@ -1,6 +1,6 @@
 package com.teame1i4.newsfeed.domain.post.service
 
-import com.teame1i4.newfeed.domain.exception.ModelNotFoundException
+import com.teame1i4.newsfeed.domain.exception.ModelNotFoundException
 import com.teame1i4.newsfeed.domain.post.dto.CreatePostRequest
 import com.teame1i4.newsfeed.domain.post.dto.PostResponse
 import com.teame1i4.newsfeed.domain.post.dto.PostWithCommentResponse

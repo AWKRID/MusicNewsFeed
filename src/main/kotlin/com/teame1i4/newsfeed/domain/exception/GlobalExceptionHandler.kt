@@ -1,6 +1,6 @@
 package com.teame1i4.newsfeed.domain.exception
 
-import com.teame1i4.newfeed.domain.exception.ModelNotFoundException
+import com.teame1i4.newsfeed.domain.exception.ModelNotFoundException
 import com.teame1i4.newsfeed.domain.exception.dto.ErrorResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -22,7 +22,7 @@ class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(IllegalArgumentException::class)
-    fun handleExceptionIllegarArgument(e: IllegalArgumentException) : ResponseEntity<ErrorResponse> {
+    fun handleExceptionIllegalArgument(e: IllegalArgumentException) : ResponseEntity<ErrorResponse> {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse(e.message))
     }
 }
