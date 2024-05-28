@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class CommentService(
-    private val commentRepository: CommentRepository
+    private val commentRepository: CommentRepository,
     private val postRepository: PostRepository
 ) {
     @Transactional
@@ -31,13 +31,14 @@ class CommentService(
         return comment.toResponse()
     }
 
+    @Transactional
     fun updateComment(
         postId: Long,
         commentId: Long,
         request: UpdateCommentRequest
     ): CommentResponse {
         val comment =
-            commentRepository.findBypPostIdAndId(postId, commentId) ?: throw RuntimeException("Comment not found")
+            commentRepository.findByPostIdAndId(postId, commentId) ?: throw RuntimeException("Comment not found")
 
         val (content) = request
         comment.content = content
