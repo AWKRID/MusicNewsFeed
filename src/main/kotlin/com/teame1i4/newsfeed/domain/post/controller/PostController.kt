@@ -1,5 +1,6 @@
 package com.teame1i4.newsfeed.domain.post.controller
 
+
 import com.teame1i4.newsfeed.domain.post.dto.CreatePostRequest
 import com.teame1i4.newsfeed.domain.post.dto.PostResponse
 import com.teame1i4.newsfeed.domain.post.dto.UpdatePostRequest
@@ -21,12 +22,18 @@ class PostController(
             .body(postService.createPost(createPostRequest))
     }
 
+    @DeleteMapping("/{postId}")
+    fun deletePost(@PathVariable(value = "postId") id: Long) : ResponseEntity<Unit> {
+        return ResponseEntity
+            .status(HttpStatus.NO_CONTENT)
+            .body(postService.deletePost(id ))
+    }
+
     @PutMapping("/{postId}")
     fun updatePost(@PathVariable postId: Long, @RequestBody updatePostRequest: UpdatePostRequest): ResponseEntity<PostResponse> {
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(postService.updatePost(postId, updatePostRequest))
-
     }
 
 
