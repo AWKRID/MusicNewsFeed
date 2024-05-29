@@ -27,4 +27,14 @@ class GlobalExceptionHandler {
     fun handleExceptionIllegalArgument(e: IllegalArgumentException) : ResponseEntity<ErrorResponse> {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse(e.message))
     }
+
+    @ExceptionHandler(AlreadyReportedException::class)
+    fun handleAlreadyReported(e: AlreadyReportedException) : ResponseEntity<ErrorResponse> {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse(e.message))
+    }
+
+    @ExceptionHandler(UpvoteNotFoundException::class)
+    fun handleUpvoteNotFound(e: UpvoteNotFoundException) : ResponseEntity<ErrorResponse> {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse(e.message))
+    }
 }
