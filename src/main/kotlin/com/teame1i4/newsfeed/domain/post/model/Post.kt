@@ -35,8 +35,8 @@ class Post(
     @Column(name = "music_type_id")
     var musicType: String,
 
-    @Column
-    var viewCount: Long = 0,
+//    @Column
+//    var viewCount: Long = 0,
 
     @Enumerated(EnumType.STRING)
     @Column
@@ -79,6 +79,23 @@ class Post(
 
     fun deleteComment(comment: Comment) {
         this.comments.remove(comment)
+    }
+
+    fun addUpvote() {
+        upvoteCount += 1
+    }
+
+    fun removeUpvote() {
+        upvoteCount -= 1
+    }
+
+    fun hidePost() {
+        postStatus = PostStatus.HIDDEN
+    }
+
+    fun addReport() {
+        reportCount += 1
+        if (reportCount >= 5) hidePost()
     }
 }
 

@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/posts/{postId}")
+@RequestMapping("/posts/{postId}/reports")
 class ReportController(
     private val reportService: ReportService
 ) {
