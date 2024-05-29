@@ -3,6 +3,7 @@ package com.teame1i4.newsfeed.domain.post.model
 import com.teame1i4.newsfeed.domain.comment.model.Comment
 import com.teame1i4.newsfeed.domain.post.dto.PostResponse
 import com.teame1i4.newsfeed.domain.post.dto.PostWithCommentResponse
+import com.teame1i4.newsfeed.domain.post.dto.UpdatePostRequest
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
@@ -28,21 +29,24 @@ class Post(
     var content: String,
 
 
-//    @Column
-//    var tags: String,
-//
-//    @Column
-//    var viewCount: Long = 0,
+    @Column
+    var tags: String,
 
-//    @Enumerated(EnumType.STRING)
-//    @Column
-//    var postStatus: PostStatus = PostStatus.HIDDEN or PUBLIC,
-//
-//    @Column
-//    var upvoteCount: Long = 0,
-//
-//    @Column
-//    var reportCount: Long = 0
+    @Column(name = "music_type_id")
+    var musicType: String,
+
+    @Column
+    var viewCount: Long = 0,
+
+    @Enumerated(EnumType.STRING)
+    @Column
+    var postStatus: PostStatus = PostStatus.HIDDEN,
+
+    @Column
+    var upvoteCount: Long = 0,
+
+    @Column
+    var reportCount: Long = 0
 
 ) {
     @Id
@@ -61,11 +65,12 @@ class Post(
     @OneToMany(mappedBy = "post")
     var comments: MutableList<Comment> = mutableListOf()
 
-    fun updatePost(title: String, userId: Long, musicUrl: String, content: String) {
-        this.title = title
-        this.userId = userId
-        this.musicUrl = musicUrl
-        this.content = content
+    fun updatePost(request: UpdatePostRequest) {
+        this.title = request.title
+        this.musicUrl = request.musicUrl
+        this.content = request.content
+        this.tags = request.tags.joinToString("#")
+        this.musicType = request.musicType
     }
 
     fun createComment(comment: Comment) {
@@ -85,15 +90,24 @@ fun Post.toResponse(): PostResponse {
         musicUrl = musicUrl,
         // TODO(need to update)
         username = "username for id $userId",
+        musicType = musicType,
+        tags = tags.split("#"),
         createdAt = createdAt,
         updatedAt = updatedAt
-        //
     )
 }
 
-fun Post.toWithCommentResponse(): PostWithCommentResponse = PostWithCommentResponse(
-    id = id!!, title = title, content = content,
-    musicUrl = musicUrl, username = "username for id $userId",
-    createdAt = createdAt, updatedAt = updatedAt,
-    comments = comments.map { it.toResponse() }
-)
+fun Post.toWithCommentResponse(): PostWithCommentResponse {
+    return PostWithCommentResponse(
+        id = id!!,
+        title = title,
+        content = content,
+        musicUrl = musicUrl,
+        username = "username for id $userId",
+        musicType = musicType,
+        tags = tags.split("#"),
+        createdAt = createdAt,
+        updatedAt = updatedAt,
+        comments = comments.map { it.toResponse() }
+    )
+}

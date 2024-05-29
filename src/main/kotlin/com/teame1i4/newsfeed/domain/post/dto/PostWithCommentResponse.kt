@@ -9,6 +9,8 @@ data class PostWithCommentResponse(
     val username: String,
     val musicUrl: String,
     val content: String,
+    val tags: List<String>,
+    val musicType: String,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime,
     var comments: List<CommentResponse>
