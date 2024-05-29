@@ -56,6 +56,7 @@ class PostService(
         return posts.map { it.toResponse() }
     }
 
+    @Transactional
     fun getPostById(postId: Long): PostWithCommentResponse {
         val post: Post = postRepository.findByIdOrNull(postId) ?: throw ModelNotFoundException("Post", postId)
         return post.toWithCommentResponse()

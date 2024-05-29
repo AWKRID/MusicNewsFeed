@@ -1,9 +1,11 @@
 package com.teame1i4.newsfeed.domain.upvote.service
 
 import com.teame1i4.newsfeed.domain.exception.ModelNotFoundException
+import com.teame1i4.newsfeed.domain.exception.UpvoteNotFoundException
+import com.teame1i4.newsfeed.domain.post.dto.PostResponse
+import com.teame1i4.newsfeed.domain.post.model.toResponse
 import com.teame1i4.newsfeed.domain.post.repository.PostRepository
-import com.teame1i4.newsfeed.domain.upvote.dto.UpvoteToggleRequest
-import com.teame1i4.newsfeed.domain.upvote.dto.UpvoteToggleResponse
+import com.teame1i4.newsfeed.domain.upvote.dto.UpvoteRequest
 import com.teame1i4.newsfeed.domain.upvote.model.Upvote
 import com.teame1i4.newsfeed.domain.upvote.repository.UpvoteRepository
 import com.teame1i4.newsfeed.domain.user.repository.UserRepository
@@ -18,28 +20,33 @@ class UpvoteService(
     private val userRepository: UserRepository
 ) {
     @Transactional
-    fun upvoteToggle(postId: Long, request: UpvoteToggleRequest): UpvoteToggleResponse {
+    fun upvotePost(postId: Long, request: UpvoteRequest): PostResponse {
         val post = postRepository.findByIdOrNull(postId) ?: throw ModelNotFoundException("Post", postId)
         val user = userRepository.findByIdOrNull(request.userId) ?: throw ModelNotFoundException("User", request.userId)
 
-        if(upvoteRepository.existsByUserIdAndPostId(request.userId, postId)) {
+        if(upvoteRepository.existsByUserIdAndPostId(postId, request.userId)) throw IllegalStateException()
 
-            val upvote = upvoteRepository.findByUserIdAndPostId(request.userId, postId) ?: throw RuntimeException("Upvote not found")
+        upvoteRepository.save(Upvote(user,post))
 
-            post.upvoteCount -= 1
+        post.addUpvote()
 
-            upvoteRepository.delete(upvote)
-        } else {
+        return post.toResponse()
+    }
 
-            val upvote = Upvote(user, post)
+    @Transactional
+    fun cancelUpvote(postId: Long, request: UpvoteRequest): PostResponse {
+        val post = postRepository.findByIdOrNull(postId) ?: throw ModelNotFoundException("Post", postId)
 
-            upvoteRepository.save(upvote)
+        if(!userRepository.existsById(request.userId))  throw ModelNotFoundException("User", request.userId)
 
-            post.upvoteCount += 1
-
-        }
-        return UpvoteToggleResponse(
-            upvoteCount = post.upvoteCount
+        val upvote = upvoteRepository.findByUserIdAndPostId(request.userId, postId) ?: throw UpvoteNotFoundException(
+            postId, request.userId
         )
+
+        post.removeUpvote()
+
+        upvoteRepository.delete(upvote)
+
+        return post.toResponse()
     }
 }
