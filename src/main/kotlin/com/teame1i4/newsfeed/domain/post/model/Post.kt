@@ -40,7 +40,7 @@ class Post(
 
     @Enumerated(EnumType.STRING)
     @Column
-    var postStatus: PostStatus = PostStatus.HIDDEN,
+    var postStatus: PostStatus = PostStatus.PUBLIC,
 
     @Column
     var upvoteCount: Long = 0,
