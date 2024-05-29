@@ -17,10 +17,10 @@ class PostController(
 ) {
 
     @GetMapping("")
-    fun getPosts(): ResponseEntity<List<PostResponse>> {
+    fun getPosts(@RequestParam(required = false, value = "tag")tag: String?): ResponseEntity<List<PostResponse>> {
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(postService.getPosts())
+            .body(postService.getPosts(tag))
     }
 
     @GetMapping("/{postId}")
