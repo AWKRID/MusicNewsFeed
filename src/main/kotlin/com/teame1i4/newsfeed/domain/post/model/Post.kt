@@ -35,8 +35,8 @@ class Post(
     @Column(name = "music_type_id")
     var musicType: String,
 
-//    @Column
-//    var viewCount: Long = 0,
+    @Column
+    var viewCount: Long = 0,
 
     @Enumerated(EnumType.STRING)
     @Column
@@ -57,7 +57,6 @@ class Post(
     @Column(updatable = false, nullable = false)
     var createdAt: LocalDateTime = LocalDateTime.now()
 
-    @LastModifiedDate
     @Column(nullable = false)
     var updatedAt: LocalDateTime = LocalDateTime.now()
 
@@ -71,6 +70,7 @@ class Post(
         this.content = request.content
         this.tags = "#" + request.tags.joinToString("#") + "#"
         this.musicType = request.musicType
+        this.updatedAt = LocalDateTime.now()
     }
 
     fun createComment(comment: Comment) {
@@ -89,13 +89,17 @@ class Post(
         upvoteCount -= 1
     }
 
-    fun hidePost() {
+    private fun hidePost() {
         postStatus = PostStatus.HIDDEN
     }
 
     fun addReport() {
         reportCount += 1
         if (reportCount >= 5) hidePost()
+    }
+
+    fun view() {
+        viewCount += 1
     }
 }
 
@@ -109,6 +113,8 @@ fun Post.toResponse(): PostResponse {
         username = "username for id $userId",
         musicType = musicType,
         tags = tags.split("#").filter(String::isNotEmpty),
+        viewCount = viewCount,
+        upvoteCount = upvoteCount,
         createdAt = createdAt,
         updatedAt = updatedAt
     )
@@ -123,6 +129,8 @@ fun Post.toWithCommentResponse(): PostWithCommentResponse {
         username = "username for id $userId",
         musicType = musicType,
         tags = tags.split("#").filter(String::isNotEmpty),
+        viewCount = viewCount,
+        upvoteCount = upvoteCount,
         createdAt = createdAt,
         updatedAt = updatedAt,
         comments = comments.map { it.toResponse() }

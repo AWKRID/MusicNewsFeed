@@ -32,7 +32,7 @@ class PostService(
             musicUrl = request.musicUrl,
             userId = request.userId,
             musicType = request.musicType,
-            tags = "#"+request.tags.joinToString("#") + "#"
+            tags = "#" + request.tags.joinToString("#") + "#"
         )
         return postRepository.save(post).toResponse()
     }
@@ -58,7 +58,7 @@ class PostService(
 
     @Transactional
     fun getPostById(postId: Long): PostWithCommentResponse {
-        val post: Post = postRepository.findByIdOrNull(postId) ?: throw ModelNotFoundException("Post", postId)
+        val post: Post = postRepository.findByIdOrNull(postId).also{it?.view()} ?: throw ModelNotFoundException("Post", postId)
         return post.toWithCommentResponse()
     }
 }
