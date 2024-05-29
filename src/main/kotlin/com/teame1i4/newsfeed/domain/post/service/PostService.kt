@@ -51,14 +51,12 @@ class PostService(
         return postRepository.save(post).toResponse()
     }
 
-    fun getPosts(tag: String?, title: String?, musicType : String?): List<PostResponse> {
-//        val posts: List<Post> = if (tag.isNullOrBlank()) postRepository.findAll() else postRepository.findAllByTag(tag)
-//        val posts: List<Post> = if (title.isNullOrBlank()) postRepository.findAll() else postRepository.findAllByTitleContaining(title)
-//        val posts: List<Post> = if (musicType.isNullOrBlank()) postRepository.findAll() else postRepository.findAllByMusicType(musicType)
+    fun getPosts(tag: String?, title: String?, musicType: String?, userId: Long?): List<PostResponse> {
 
         val posts: List<Post> = if (!tag.isNullOrBlank()) postRepository.findAllByTag(tag)
         else if (!title.isNullOrBlank()) postRepository.findAllByTitleContaining(title)
         else if (!musicType.isNullOrBlank()) postRepository.findAllByMusicType(musicType) // TODO : 장르 값이 없는 거면 빈 목록 반환 또는 Error 선택
+        else if (userId != null) postRepository.findAllByUserId(userId)
         else postRepository.findAll()
 
         return posts.map { it.toResponse() }
