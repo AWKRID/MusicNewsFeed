@@ -51,14 +51,21 @@ class PostService(
         return postRepository.save(post).toResponse()
     }
 
-    fun getPosts(tag: String?): List<PostResponse> {
-        val posts: List<Post> = if (tag.isNullOrBlank()) postRepository.findAll() else postRepository.findAllByTag(tag)
+    fun getPosts(tag: String?, title: String?): List<PostResponse> {
+//        val posts: List<Post> = if (tag.isNullOrBlank()) postRepository.findAll() else postRepository.findAllByTag(tag)
+//        val posts: List<Post> = if (title.isNullOrBlank()) postRepository.findAll() else postRepository.findAllByTitleContaining(title)
+
+        val posts: List<Post> = if (!tag.isNullOrBlank()) postRepository.findAllByTag(tag)
+        else if (!title.isNullOrBlank()) postRepository.findAllByTitleContaining(title)
+        else postRepository.findAll()
+
         return posts.map { it.toResponse() }
     }
 
     @Transactional
     fun getPostById(postId: Long): PostWithCommentResponse {
-        val post: Post = postRepository.findByIdOrNull(postId).also{it?.view()} ?: throw ModelNotFoundException("Post", postId)
+        val post: Post =
+            postRepository.findByIdOrNull(postId).also { it?.view() } ?: throw ModelNotFoundException("Post", postId)
         return post.toWithCommentResponse()
     }
 }

@@ -8,4 +8,6 @@ import org.springframework.data.repository.query.Param
 interface PostRepository : JpaRepository<Post, Long> {
     @Query("select p from Post p where p.tags like concat('%#',:tag,'#%')")
     fun findAllByTag(@Param("tag") tag: String): List<Post>
+
+    fun findAllByTitleContaining(@Param("title") title: String) : List<Post>
 }
