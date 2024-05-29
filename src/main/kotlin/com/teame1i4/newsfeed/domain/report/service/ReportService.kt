@@ -27,8 +27,11 @@ class ReportService(
         if(reportRepository.existsByUserIdAndPostId(request.userId, postId)) throw RuntimeException("이미 신고된 게시글입니다")
 
         post.reportCount += 1
+
         if (post.reportCount >= 5) post.postStatus = PostStatus.HIDDEN
+
         val report = Report(user, post)
+
         reportRepository.save(report)
     }
 }
