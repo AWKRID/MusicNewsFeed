@@ -10,4 +10,6 @@ interface PostRepository : JpaRepository<Post, Long> {
     fun findAllByTag(@Param("tag") tag: String): List<Post>
 
     fun findAllByTitleContaining(@Param("title") title: String) : List<Post>
+    fun findAllByMusicType(@Param("music_type_id") musicTypeId: String) : List<Post>
+
 }
