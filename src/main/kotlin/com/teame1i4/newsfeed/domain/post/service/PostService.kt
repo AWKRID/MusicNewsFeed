@@ -32,7 +32,7 @@ class PostService(
             musicUrl = request.musicUrl,
             userId = request.userId,
             musicType = request.musicType,
-            tags = request.tags.joinToString("#")
+            tags = "#"+request.tags.joinToString("#") + "#"
         )
         return postRepository.save(post).toResponse()
     }
@@ -51,8 +51,8 @@ class PostService(
         return postRepository.save(post).toResponse()
     }
 
-    fun getPosts(): List<PostResponse> {
-        val posts: List<Post> = postRepository.findAll()
+    fun getPosts(tag: String?): List<PostResponse> {
+        val posts: List<Post> = if (tag.isNullOrBlank()) postRepository.findAll() else postRepository.findAllByTag(tag)
         return posts.map { it.toResponse() }
     }
 

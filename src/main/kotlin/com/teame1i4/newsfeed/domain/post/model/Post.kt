@@ -51,7 +51,7 @@ class Post(
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null
+    var id: Long? = null
 
     @CreatedDate
     @Column(updatable = false, nullable = false)
@@ -69,7 +69,7 @@ class Post(
         this.title = request.title
         this.musicUrl = request.musicUrl
         this.content = request.content
-        this.tags = request.tags.joinToString("#")
+        this.tags = "#" + request.tags.joinToString("#") + "#"
         this.musicType = request.musicType
     }
 
@@ -108,7 +108,7 @@ fun Post.toResponse(): PostResponse {
         // TODO(need to update)
         username = "username for id $userId",
         musicType = musicType,
-        tags = tags.split("#"),
+        tags = tags.split("#").filter(String::isNotEmpty),
         createdAt = createdAt,
         updatedAt = updatedAt
     )
@@ -122,7 +122,7 @@ fun Post.toWithCommentResponse(): PostWithCommentResponse {
         musicUrl = musicUrl,
         username = "username for id $userId",
         musicType = musicType,
-        tags = tags.split("#"),
+        tags = tags.split("#").filter(String::isNotEmpty),
         createdAt = createdAt,
         updatedAt = updatedAt,
         comments = comments.map { it.toResponse() }
