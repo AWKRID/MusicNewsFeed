@@ -4,7 +4,7 @@ data class CreatePostRequest(
     val title: String,
     val musicUrl: String,
     val content: String,
-    val userId: Long,
+    val memberId: Long,
     val musicType: String,
     val tags: List<String>
 )

@@ -8,7 +8,7 @@ import com.teame1i4.newsfeed.domain.post.repository.PostRepository
 import com.teame1i4.newsfeed.domain.upvote.dto.UpvoteRequest
 import com.teame1i4.newsfeed.domain.upvote.model.Upvote
 import com.teame1i4.newsfeed.domain.upvote.repository.UpvoteRepository
-import com.teame1i4.newsfeed.domain.user.repository.UserRepository
+import com.teame1i4.newsfeed.domain.member.repository.MemberRepository
 import jakarta.transaction.Transactional
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -17,16 +17,16 @@ import org.springframework.stereotype.Service
 class UpvoteService(
     private val upvoteRepository: UpvoteRepository,
     private val postRepository: PostRepository,
-    private val userRepository: UserRepository
+    private val memberRepository: MemberRepository
 ) {
     @Transactional
     fun upvotePost(postId: Long, request: UpvoteRequest): PostResponse {
         val post = postRepository.findByIdOrNull(postId) ?: throw ModelNotFoundException("Post", postId)
-        val user = userRepository.findByIdOrNull(request.userId) ?: throw ModelNotFoundException("User", request.userId)
+        val member = memberRepository.findByIdOrNull(request.memberId) ?: throw ModelNotFoundException("Member", request.memberId)
 
-        if(upvoteRepository.existsByUserIdAndPostId(postId, request.userId)) throw IllegalStateException()
+        if(upvoteRepository.existsByMemberIdAndPostId(postId, request.memberId)) throw IllegalStateException()
 
-        upvoteRepository.save(Upvote(user,post))
+        upvoteRepository.save(Upvote(member,post))
 
         post.addUpvote()
 
@@ -37,10 +37,10 @@ class UpvoteService(
     fun cancelUpvote(postId: Long, request: UpvoteRequest): PostResponse {
         val post = postRepository.findByIdOrNull(postId) ?: throw ModelNotFoundException("Post", postId)
 
-        if(!userRepository.existsById(request.userId))  throw ModelNotFoundException("User", request.userId)
+        if(!memberRepository.existsById(request.memberId))  throw ModelNotFoundException("Member", request.memberId)
 
-        val upvote = upvoteRepository.findByUserIdAndPostId(request.userId, postId) ?: throw UpvoteNotFoundException(
-            postId, request.userId
+        val upvote = upvoteRepository.findByMemberIdAndPostId(request.memberId, postId) ?: throw UpvoteNotFoundException(
+            postId, request.memberId
         )
 
         post.removeUpvote()

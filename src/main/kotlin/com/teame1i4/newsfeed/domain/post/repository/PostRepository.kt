@@ -11,5 +11,5 @@ interface PostRepository : JpaRepository<Post, Long> {
 
     fun findAllByTitleContaining(title: String) : List<Post>
     fun findAllByMusicType(musicTypeId: String) : List<Post>
-    fun findAllByUserId(userId : Long) : List<Post>
+    fun findAllByMemberId(memberId : Long) : List<Post>
 }

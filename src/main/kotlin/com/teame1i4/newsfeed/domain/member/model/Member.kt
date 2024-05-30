@@ -1,11 +1,11 @@
-package com.teame1i4.newsfeed.domain.user.model
+package com.teame1i4.newsfeed.domain.member.model
 
-import com.teame1i4.newsfeed.domain.user.dto.response.UserResponse
+import com.teame1i4.newsfeed.domain.member.dto.response.MemberResponse
 import jakarta.persistence.*
 
 @Entity
 @Table(name = "member")
-class User(
+class Member(
     @Column(name = "username", unique = true, nullable = false)
     var username: String,
 
@@ -17,5 +17,5 @@ class User(
     var id: Long? = null
 
 
-    fun toResponse(): UserResponse = UserResponse(id!!, username)
+    fun toResponse(): MemberResponse = MemberResponse(id!!, username)
 }

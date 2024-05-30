@@ -15,8 +15,8 @@ class Comment(
     @Column(name = "content", nullable = false)
     var content: String,
 
-    @Column(name = "user_Id", nullable = false)
-    val userId: Long,
+    @Column(name = "member_id", nullable = false)
+    val memberId: Long,
 
     @ManyToOne
     @JoinColumn(name = "post_id")

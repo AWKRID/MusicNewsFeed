@@ -21,11 +21,11 @@ class PostController(
         @RequestParam(required = false, value = "tag") tag: String?,
         @RequestParam(required = false, name = "title") title: String?,
         @RequestParam(required = false, name = "music_type") musicType: String?,
-        @RequestParam(required = false, name = "userId") userId: Long?
+        @RequestParam(required = false, name = "memberId") memberId: Long?
     ): ResponseEntity<List<PostResponse>> {
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(postService.getPosts(tag, title, musicType, userId))
+            .body(postService.getPosts(tag, title, musicType, memberId))
     }
 
     @GetMapping("/{postId}")
