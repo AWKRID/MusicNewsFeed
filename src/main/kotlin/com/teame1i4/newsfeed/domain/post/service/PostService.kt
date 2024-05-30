@@ -12,6 +12,7 @@ import com.teame1i4.newsfeed.domain.post.model.toWithCommentResponse
 import com.teame1i4.newsfeed.domain.post.repository.MusicTypeRepository
 import com.teame1i4.newsfeed.domain.post.repository.PostRepository
 import com.teame1i4.newsfeed.domain.member.repository.MemberRepository
+import com.teame1i4.newsfeed.domain.post.model.MusicType
 import jakarta.transaction.Transactional
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -34,6 +35,11 @@ class PostService(
             musicType = request.musicType,
             tags = "#" + request.tags.joinToString("#") + "#"
         )
+
+        val musicType : MusicType = musicTypeRepository.findByIdOrNull(request.musicType) ?: throw TypeNotFoundException(request.musicType)
+        musicType.updateCountPost(true)
+        musicTypeRepository.save(musicType)
+
         return postRepository.save(post).toResponse()
     }
 
@@ -41,13 +47,26 @@ class PostService(
     fun deletePost(postId: Long) {
         val post: Post = postRepository.findByIdOrNull(postId) ?: throw ModelNotFoundException("Post", postId)
         postRepository.delete(post)
+
+        val musicType : MusicType = musicTypeRepository.findByIdOrNull(post.musicType) ?: throw TypeNotFoundException(post.musicType)
+        musicType.updateCountPost(false)
+        musicTypeRepository.save(musicType)
     }
 
     @Transactional
     fun updatePost(postId: Long, request: UpdatePostRequest): PostResponse {
         val post = postRepository.findByIdOrNull(postId) ?: throw ModelNotFoundException("Post", postId)
-        musicTypeRepository.findByIdOrNull(request.musicType) ?: throw TypeNotFoundException(request.musicType)
+        var musicType : MusicType = musicTypeRepository.findByIdOrNull(request.musicType) ?: throw TypeNotFoundException(request.musicType)
+
+        musicType.updateCountPost(false)
+        musicTypeRepository.save(musicType)
+
         post.updatePost(request)
+
+        musicType = musicTypeRepository.findByIdOrNull(post.musicType) ?: throw TypeNotFoundException(post.musicType)
+        musicType.updateCountPost(true)
+        musicTypeRepository.save(musicType)
+
         return postRepository.save(post).toResponse()
     }
 

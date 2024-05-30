@@ -8,4 +8,14 @@ class MusicType(
 ) {
     @Id
     val type: String? = null
+
+    @Column(name = "count_post", nullable = false)
+    private var countPost: Long = 0
+
+    fun updateCountPost(increase : Boolean) {
+        when(increase) {
+            true -> countPost++
+            false -> countPost--
+        }
+    }
 }
