@@ -4,4 +4,6 @@ import com.teame1i4.newsfeed.domain.member.model.Member
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface MemberRepository : JpaRepository<Member, Long> {
+    fun existsByUsername(username: String): Boolean
+    fun findByUsername(username: String): Member?
 }
