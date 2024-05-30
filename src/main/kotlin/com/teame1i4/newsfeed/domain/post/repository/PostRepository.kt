@@ -9,7 +9,7 @@ interface PostRepository : JpaRepository<Post, Long> {
     @Query("select p from Post p where p.tags like concat('%#',:tag,'#%')")
     fun findAllByTag(@Param("tag") tag: String): List<Post>
 
-    fun findAllByTitleContaining(@Param("title") title: String) : List<Post>
-    fun findAllByMusicType(@Param("music_type_id") musicTypeId: String) : List<Post>
-    fun findAllByUserId(@Param("userId") userId : Long) : List<Post>
+    fun findAllByTitleContaining(title: String) : List<Post>
+    fun findAllByMusicType(musicTypeId: String) : List<Post>
+    fun findAllByUserId(userId : Long) : List<Post>
 }

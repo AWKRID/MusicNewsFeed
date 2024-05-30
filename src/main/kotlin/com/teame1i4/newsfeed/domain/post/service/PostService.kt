@@ -55,7 +55,7 @@ class PostService(
 
         val posts: List<Post> = if (!tag.isNullOrBlank()) postRepository.findAllByTag(tag)
         else if (!title.isNullOrBlank()) postRepository.findAllByTitleContaining(title)
-        else if (!musicType.isNullOrBlank()) postRepository.findAllByMusicType(musicType) // TODO : 장르 값이 없는 거면 빈 목록 반환 또는 Error 선택
+        else if (!musicType.isNullOrBlank()) postRepository.findAllByMusicType(musicType)
         else if (userId != null) postRepository.findAllByUserId(userId)
         else postRepository.findAll()
 
