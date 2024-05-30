@@ -10,6 +10,8 @@ data class PostResponse(
     val content: String,
     val tags: List<String>,
     val musicType: String,
+    val viewCount: Long,
+    val upvoteCount: Long,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime,
 )
