@@ -4,5 +4,5 @@ import com.teame1i4.newsfeed.domain.report.model.Report
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface ReportRepository: JpaRepository<Report, Long> {
-    fun existsByUserIdAndPostId(userId: Long, postId: Long): Boolean
+    fun existsByMemberIdAndPostId(memberId: Long, postId: Long): Boolean
 }

@@ -1,7 +1,7 @@
 package com.teame1i4.newsfeed.domain.upvote.model
 
 import com.teame1i4.newsfeed.domain.post.model.Post
-import com.teame1i4.newsfeed.domain.user.model.User
+import com.teame1i4.newsfeed.domain.member.model.Member
 import jakarta.persistence.*
 
 @Entity
@@ -9,8 +9,8 @@ import jakarta.persistence.*
 class Upvote(
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    var user: User,
+    @JoinColumn(name = "member_id")
+    var member: Member,
 
     @ManyToOne
     @JoinColumn(name = "post_id")

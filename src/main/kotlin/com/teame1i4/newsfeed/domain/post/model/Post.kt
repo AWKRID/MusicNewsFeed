@@ -20,7 +20,7 @@ class Post(
     var title: String,
 
     @Column
-    var userId: Long,
+    var memberId: Long,
 
     @Column
     var musicUrl: String,
@@ -110,7 +110,7 @@ fun Post.toResponse(): PostResponse {
         content = content,
         musicUrl = musicUrl,
         // TODO(need to update)
-        username = "username for id $userId",
+        username = "username for id $memberId",
         musicType = musicType,
         tags = tags.split("#").filter(String::isNotEmpty),
         viewCount = viewCount,
@@ -126,7 +126,7 @@ fun Post.toWithCommentResponse(): PostWithCommentResponse {
         title = title,
         content = content,
         musicUrl = musicUrl,
-        username = "username for id $userId",
+        username = "username for id $memberId",
         musicType = musicType,
         tags = tags.split("#").filter(String::isNotEmpty),
         viewCount = viewCount,

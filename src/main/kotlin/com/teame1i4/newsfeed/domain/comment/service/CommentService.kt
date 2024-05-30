@@ -22,7 +22,7 @@ class CommentService(
         val post = postRepository.findByIdOrNull(postId) ?: throw ModelNotFoundException("Post", postId)
 
         val comment = Comment(
-            userId = request.userId,
+            memberId = request.memberId,
             content = request.content,
             post = post
         )

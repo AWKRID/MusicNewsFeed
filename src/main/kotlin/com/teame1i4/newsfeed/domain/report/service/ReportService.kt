@@ -6,7 +6,7 @@ import com.teame1i4.newsfeed.domain.post.repository.PostRepository
 import com.teame1i4.newsfeed.domain.report.dto.CreateReportRequest
 import com.teame1i4.newsfeed.domain.report.model.Report
 import com.teame1i4.newsfeed.domain.report.repository.ReportRepository
-import com.teame1i4.newsfeed.domain.user.repository.UserRepository
+import com.teame1i4.newsfeed.domain.member.repository.MemberRepository
 import jakarta.transaction.Transactional
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -16,20 +16,20 @@ import org.springframework.stereotype.Service
 class ReportService(
     private val reportRepository: ReportRepository,
     private val postRepository: PostRepository,
-    private val userRepository: UserRepository
+    private val memberRepository: MemberRepository
 ) {
 
     @Transactional
     fun createReport(postId: Long, request: CreateReportRequest) {
         val post = postRepository.findByIdOrNull(postId) ?: throw ModelNotFoundException("Post", postId)
-        val user = userRepository.findByIdOrNull(request.userId) ?: throw ModelNotFoundException("User", request.userId)
+        val member = memberRepository.findByIdOrNull(request.memberId) ?: throw ModelNotFoundException("Member", request.memberId)
 
-        if(reportRepository.existsByUserIdAndPostId(request.userId, postId)) throw AlreadyReportedException(
-            postId, request.userId
+        if(reportRepository.existsByMemberIdAndPostId(request.memberId, postId)) throw AlreadyReportedException(
+            postId, request.memberId
         )
 
         post.addReport()
 
-        reportRepository.save(Report(user,post))
+        reportRepository.save(Report(member,post))
     }
 }
