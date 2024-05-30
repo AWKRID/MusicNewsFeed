@@ -10,7 +10,11 @@ class Member(
     var username: String,
 
     @Column(name = "password", nullable = false)
-    var password: String
+    var password: String,
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false)
+    var role : MemberRole =MemberRole.USER
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
