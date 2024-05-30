@@ -29,5 +29,7 @@ class JwtAuthenticationFilter(
             SecurityContextHolder.getContext().authentication =
                 UsernamePasswordAuthenticationToken(memberDetails, null, memberDetails.authorities)
         }
+
+        filterChain.doFilter(request, response)
     }
 }

@@ -42,7 +42,7 @@ class WebSecurityConfig (
             .csrf { it.disable() }
             .cors(Customizer.withDefaults())
             .addFilterBefore(JwtAuthenticationFilter(memberDetailsService, jwtUtility), UsernamePasswordAuthenticationFilter::class.java)
-//            .addFilterBefore(ExceptionHandlerFilter(), JwtAuthenticationFilter::class.java)
+            .addFilterBefore(ExceptionHandlerFilter(), JwtAuthenticationFilter::class.java)
             .exceptionHandling { it
                 .authenticationEntryPoint(entryPoint)
                 .accessDeniedHandler(accessDeniedHandler)
