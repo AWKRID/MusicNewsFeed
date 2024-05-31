@@ -1,5 +1,6 @@
 package com.teame1i4.newsfeed.domain.musictype.model
 
+import com.teame1i4.newsfeed.domain.musictype.dto.MusicTypeCountResponse
 import jakarta.persistence.*
 
 @Entity
@@ -10,12 +11,19 @@ class MusicType(
     val type: String? = null
 
     @Column(name = "count_post", nullable = false)
-    private var countPost: Long = 0
+    var countPost: Long = 0
 
-    fun updateCountPost(increase : Boolean) {
-        when(increase) {
+    fun updateCountPost(increase: Boolean) {
+        when (increase) {
             true -> countPost++
             false -> countPost--
         }
     }
+}
+
+fun MusicType.toResponse(): MusicTypeCountResponse {
+    return MusicTypeCountResponse(
+        musicType = type!!,
+        count = countPost
+    )
 }
