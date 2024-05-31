@@ -1,15 +1,15 @@
 package com.teame1i4.newsfeed.domain.post.service
 
-import com.teame1i4.newsfeed.domain.comment.model.Comment
 import com.teame1i4.newsfeed.domain.exception.ModelNotFoundException
 import com.teame1i4.newsfeed.domain.exception.TypeNotFoundException
 import com.teame1i4.newsfeed.domain.post.dto.CreatePostRequest
 import com.teame1i4.newsfeed.domain.post.dto.PostResponse
 import com.teame1i4.newsfeed.domain.post.dto.PostWithCommentResponse
 import com.teame1i4.newsfeed.domain.post.dto.UpdatePostRequest
-import com.teame1i4.newsfeed.domain.post.repository.MusicTypeRepository
+import com.teame1i4.newsfeed.domain.musictype.repository.MusicTypeRepository
 import com.teame1i4.newsfeed.domain.post.repository.PostRepository
 import com.teame1i4.newsfeed.domain.member.repository.MemberRepository
+import com.teame1i4.newsfeed.domain.musictype.model.MusicType
 import com.teame1i4.newsfeed.domain.post.model.*
 import jakarta.transaction.Transactional
 import org.springframework.data.repository.findByIdOrNull
