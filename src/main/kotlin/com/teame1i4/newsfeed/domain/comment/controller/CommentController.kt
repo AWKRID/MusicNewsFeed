@@ -13,6 +13,15 @@ import org.springframework.web.bind.annotation.*
 class CommentController(
     private val commentService: CommentService
 ) {
+    @GetMapping
+    fun getCommentList(
+        @PathVariable postId: Long
+    ): ResponseEntity<List<CommentResponse>> {
+        return ResponseEntity.ok(
+            commentService.getCommentList(postId)
+        )
+    }
+
     @PostMapping
     fun createComment(
         @PathVariable postId: Long,

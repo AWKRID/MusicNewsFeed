@@ -19,6 +19,10 @@ class CommentService(
     private val postRepository: PostRepository,
     private val memberRepository: MemberRepository
 ) {
+    fun getCommentList(postId: Long): List<CommentResponse> {
+        return commentRepository.findAllByPostIdOrderByCreatedAtAsc(postId).map { it.toResponse() }
+    }
+
     @Transactional
     fun createComment(postId: Long, request: CreateCommentRequest): CommentResponse {
         val post = postRepository.findByIdOrNull(postId) ?: throw ModelNotFoundException("Post", postId)
