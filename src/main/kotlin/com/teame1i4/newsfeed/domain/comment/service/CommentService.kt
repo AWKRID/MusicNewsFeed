@@ -6,6 +6,7 @@ import com.teame1i4.newsfeed.domain.comment.dto.request.UpdateCommentRequest
 import com.teame1i4.newsfeed.domain.comment.dto.response.CommentResponse
 import com.teame1i4.newsfeed.domain.comment.model.Comment
 import com.teame1i4.newsfeed.domain.comment.repository.CommentRepository
+import com.teame1i4.newsfeed.domain.member.repository.MemberRepository
 import com.teame1i4.newsfeed.domain.post.repository.PostRepository
 import jakarta.transaction.Transactional
 import org.springframework.data.repository.findByIdOrNull
@@ -15,11 +16,13 @@ import org.springframework.stereotype.Service
 @Service
 class CommentService(
     private val commentRepository: CommentRepository,
-    private val postRepository: PostRepository
+    private val postRepository: PostRepository,
+    private val memberRepository: MemberRepository
 ) {
     @Transactional
     fun createComment(postId: Long, request: CreateCommentRequest): CommentResponse {
         val post = postRepository.findByIdOrNull(postId) ?: throw ModelNotFoundException("Post", postId)
+        memberRepository.findByIdOrNull(request.memberId) ?: throw ModelNotFoundException("member", request.memberId)
 
         val comment = Comment(
             memberId = request.memberId,
