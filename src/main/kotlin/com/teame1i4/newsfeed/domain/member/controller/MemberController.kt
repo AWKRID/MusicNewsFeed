@@ -12,12 +12,6 @@ import org.springframework.web.bind.annotation.*
 class MemberController(
     private val memberService: MemberService
 ) {
-
-    @PostMapping
-    fun createMember(@RequestBody request: CreateMemberRequest): ResponseEntity<MemberResponse> =
-        ResponseEntity.status(HttpStatus.CREATED)
-            .body(memberService.createMember(request))
-
     @GetMapping("/{memberId}")
     fun getMember(@PathVariable memberId: Long): ResponseEntity<MemberResponse> =
         ResponseEntity.status(HttpStatus.OK)
