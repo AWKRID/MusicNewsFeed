@@ -45,7 +45,10 @@ class Post(
     var upvoteCount: Long = 0,
 
     @Column
-    var reportCount: Long = 0
+    var reportCount: Long = 0,
+
+    @Column
+    var commentCount: Long = 0
 
 ) {
     @Id
@@ -74,10 +77,12 @@ class Post(
 
     fun createComment(comment: Comment) {
         this.comments.add(comment)
+        commentCount += 1
     }
 
     fun deleteComment(comment: Comment) {
         this.comments.remove(comment)
+        commentCount -= 1
     }
 
     fun addUpvote() {
@@ -115,7 +120,8 @@ fun Post.toResponse(): PostResponse {
         viewCount = viewCount,
         upvoteCount = upvoteCount,
         createdAt = createdAt,
-        updatedAt = updatedAt
+        updatedAt = updatedAt,
+        commentCount = commentCount
     )
 }
 
