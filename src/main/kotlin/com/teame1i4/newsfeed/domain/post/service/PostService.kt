@@ -1,15 +1,16 @@
 package com.teame1i4.newsfeed.domain.post.service
 
-import com.teame1i4.newsfeed.domain.comment.model.Comment
 import com.teame1i4.newsfeed.domain.exception.ModelNotFoundException
 import com.teame1i4.newsfeed.domain.exception.TypeNotFoundException
+import com.teame1i4.newsfeed.domain.exception.YouTubeUrlNotValidException
 import com.teame1i4.newsfeed.domain.post.dto.CreatePostRequest
 import com.teame1i4.newsfeed.domain.post.dto.PostResponse
 import com.teame1i4.newsfeed.domain.post.dto.PostWithCommentResponse
 import com.teame1i4.newsfeed.domain.post.dto.UpdatePostRequest
-import com.teame1i4.newsfeed.domain.post.repository.MusicTypeRepository
 import com.teame1i4.newsfeed.domain.post.repository.PostRepository
 import com.teame1i4.newsfeed.domain.member.repository.MemberRepository
+import com.teame1i4.newsfeed.domain.musictype.model.MusicType
+import com.teame1i4.newsfeed.domain.musictype.repository.MusicTypeRepository
 import com.teame1i4.newsfeed.domain.post.model.*
 import jakarta.transaction.Transactional
 import org.springframework.data.repository.findByIdOrNull
@@ -25,10 +26,13 @@ class PostService(
     fun createPost(request: CreatePostRequest): PostResponse {
         musicTypeRepository.findByIdOrNull(request.musicType) ?: throw TypeNotFoundException(request.musicType)
         memberRepository.findByIdOrNull(request.memberId) ?: throw ModelNotFoundException("member", request.memberId)
+
+        val youtubeId = extractYoutubeId(request.musicUrl)
+
         val post = Post(
             title = request.title,
             content = request.content,
-            musicUrl = request.musicUrl,
+            musicUrl = youtubeId,
             memberId = request.memberId,
             musicType = request.musicType,
             tags = "#" + request.tags.joinToString("#") + "#"
@@ -62,7 +66,9 @@ class PostService(
         musicType.updateCountPost(false)
         musicTypeRepository.save(musicType)
 
-        post.updatePost(request)
+        val youtubeId = extractYoutubeId(request.musicUrl)
+
+        post.updatePost(request, youtubeId)
 
         musicType = musicTypeRepository.findByIdOrNull(post.musicType) ?: throw TypeNotFoundException(post.musicType)
         musicType.updateCountPost(true)
@@ -100,5 +106,13 @@ class PostService(
         post.comments.sortBy { it.createdAt }
 
         return post.toWithCommentResponse()
+    }
+
+    private fun extractYoutubeId(musicUrl: String): String {
+        val regex = Regex("""(?:https?://)?(?:www.|m.)?(?:youtube.com/watch\?v=|youtu.be/|youtube.com/embed/)(?<url>[a-zA-Z0-9_-]{11})""")
+
+        val youtubeId = regex.find(musicUrl)?.groups?.get("url")?.value ?: throw YouTubeUrlNotValidException(musicUrl)
+
+        return youtubeId
     }
 }
