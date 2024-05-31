@@ -103,7 +103,7 @@ class PostService(
         val post: Post =
             postRepository.findByIdOrNull(postId).also { it?.view() } ?: throw ModelNotFoundException("Post", postId)
 
-        post.comments.sortByDescending { it.createdAt }
+        post.comments.sortBy { it.createdAt }
 
         return post.toWithCommentResponse()
     }
