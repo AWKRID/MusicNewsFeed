@@ -53,11 +53,11 @@ class PostService(
 
     fun getPosts(tag: String?, title: String?, musicType: String?, memberId: Long?): List<PostResponse> {
 
-        val posts: List<Post> = if (!tag.isNullOrBlank()) postRepository.findAllByTag(tag)
-        else if (!title.isNullOrBlank()) postRepository.findAllByTitleContaining(title)
-        else if (!musicType.isNullOrBlank()) postRepository.findAllByMusicType(musicType)
-        else if (memberId != null) postRepository.findAllByMemberId(memberId)
-        else postRepository.findAll()
+        val posts: List<Post> = if (!tag.isNullOrBlank()) postRepository.findAllByTagOrderByCreatedAtDesc(tag)
+        else if (!title.isNullOrBlank()) postRepository.findAllByTitleContainingOrderByCreatedAtDesc(title)
+        else if (!musicType.isNullOrBlank()) postRepository.findAllByMusicTypeOrderByCreatedAtDesc(musicType)
+        else if (memberId != null) postRepository.findAllByMemberIdOrderByCreatedAtDesc(memberId)
+        else postRepository.findAllByOrderByCreatedAtDesc()
 
         return posts.map { it.toResponse() }
     }

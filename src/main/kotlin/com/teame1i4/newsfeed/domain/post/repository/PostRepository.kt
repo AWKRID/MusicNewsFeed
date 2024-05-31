@@ -6,10 +6,12 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 
 interface PostRepository : JpaRepository<Post, Long> {
-    @Query("select p from Post p where p.tags like concat('%#',:tag,'#%')")
-    fun findAllByTag(@Param("tag") tag: String): List<Post>
+    @Query("select p from Post p where p.tags like concat('%#',:tag,'#%') order by p.createdAt desc")
+    fun findAllByTagOrderByCreatedAtDesc(@Param("tag") tag: String): List<Post>
 
-    fun findAllByTitleContaining(title: String) : List<Post>
-    fun findAllByMusicType(musicTypeId: String) : List<Post>
-    fun findAllByMemberId(memberId : Long) : List<Post>
+    fun findAllByTitleContainingOrderByCreatedAtDesc(title: String) : List<Post>
+    fun findAllByMusicTypeOrderByCreatedAtDesc(musicTypeId: String) : List<Post>
+    fun findAllByMemberIdOrderByCreatedAtDesc(memberId : Long) : List<Post>
+    fun findAllByOrderByCreatedAtDesc() : List<Post>
+
 }
