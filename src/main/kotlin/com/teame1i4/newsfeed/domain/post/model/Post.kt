@@ -1,12 +1,15 @@
 package com.teame1i4.newsfeed.domain.post.model
 
+import com.teame1i4.newsfeed.domain.comment.dto.response.CommentResponse
 import com.teame1i4.newsfeed.domain.comment.model.Comment
+import com.teame1i4.newsfeed.domain.member.model.Member
 import com.teame1i4.newsfeed.domain.post.dto.PostResponse
 import com.teame1i4.newsfeed.domain.post.dto.PostWithCommentResponse
 import com.teame1i4.newsfeed.domain.post.dto.UpdatePostRequest
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
+import org.springframework.data.repository.findByIdOrNull
 import java.time.LocalDateTime
 
 
@@ -107,37 +110,39 @@ class Post(
     }
 }
 
-fun Post.toResponse(): PostResponse {
+fun Post.toResponse(member: Member, hasUpvoted: Boolean): PostResponse {
     return PostResponse(
         id = id!!,
         title = title,
         content = content,
         musicUrl = musicUrl,
-        // TODO(need to update)
-        username = "username for id $memberId",
+        member = member.toResponse(),
         musicType = musicType,
         tags = tags.split("#").filter(String::isNotEmpty),
         viewCount = viewCount,
         upvoteCount = upvoteCount,
         createdAt = createdAt,
         updatedAt = updatedAt,
-        commentCount = commentCount
+        commentCount = commentCount,
+        hasUpvoted = hasUpvoted
     )
 }
 
-fun Post.toWithCommentResponse(): PostWithCommentResponse {
+fun Post.toWithCommentResponse(member: Member, commentResponses: List<CommentResponse>,
+                               hasUpvoted: Boolean): PostWithCommentResponse {
     return PostWithCommentResponse(
         id = id!!,
         title = title,
         content = content,
         musicUrl = musicUrl,
-        username = "username for id $memberId",
+        member = member.toResponse(),
         musicType = musicType,
         tags = tags.split("#").filter(String::isNotEmpty),
         viewCount = viewCount,
         upvoteCount = upvoteCount,
         createdAt = createdAt,
         updatedAt = updatedAt,
-        comments = comments.map { it.toResponse() }
+        comments = commentResponses,
+        hasUpvoted = hasUpvoted
     )
 }

@@ -1,6 +1,7 @@
 package com.teame1i4.newsfeed.domain.comment.model
 
 import com.teame1i4.newsfeed.domain.comment.dto.response.CommentResponse
+import com.teame1i4.newsfeed.domain.member.model.Member
 import com.teame1i4.newsfeed.domain.post.model.Post
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
@@ -35,9 +36,9 @@ class Comment(
     var updatedAt: LocalDateTime = LocalDateTime.now()
 
 
-    fun toResponse(): CommentResponse = CommentResponse(
+    fun toResponse(member: Member): CommentResponse = CommentResponse(
         id = id!!,
-        username = "" ,
+        member = member.toResponse(),
         content = content,
         createdAt = createdAt,
         updatedAt = updatedAt

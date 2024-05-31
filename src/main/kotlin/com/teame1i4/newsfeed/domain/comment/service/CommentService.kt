@@ -6,10 +6,13 @@ import com.teame1i4.newsfeed.domain.comment.dto.request.UpdateCommentRequest
 import com.teame1i4.newsfeed.domain.comment.dto.response.CommentResponse
 import com.teame1i4.newsfeed.domain.comment.model.Comment
 import com.teame1i4.newsfeed.domain.comment.repository.CommentRepository
+import com.teame1i4.newsfeed.domain.exception.UnauthorizedAccessException
+import com.teame1i4.newsfeed.domain.member.adapter.MemberDetails
 import com.teame1i4.newsfeed.domain.member.repository.MemberRepository
 import com.teame1i4.newsfeed.domain.post.repository.PostRepository
 import jakarta.transaction.Transactional
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 
 
@@ -20,44 +23,50 @@ class CommentService(
     private val memberRepository: MemberRepository
 ) {
     fun getCommentList(postId: Long): List<CommentResponse> {
-        return commentRepository.findAllByPostIdOrderByCreatedAtAsc(postId).map { it.toResponse() }
+        return commentRepository.findAllByPostIdOrderByCreatedAtAsc(postId).map { it.toResponse(memberRepository.findByIdOrNull(it.memberId)!!) }
     }
 
+    @PreAuthorize("hasRole('USER')")
     @Transactional
-    fun createComment(postId: Long, request: CreateCommentRequest): CommentResponse {
+    fun createComment(postId: Long, request: CreateCommentRequest, member: MemberDetails): CommentResponse {
         val post = postRepository.findByIdOrNull(postId) ?: throw ModelNotFoundException("Post", postId)
-        memberRepository.findByIdOrNull(request.memberId) ?: throw ModelNotFoundException("member", request.memberId)
+        val user = memberRepository.findByIdOrNull(member.memberId) ?: throw ModelNotFoundException("member", member.memberId)
 
         val comment = Comment(
-            memberId = request.memberId,
+            memberId = member.memberId,
             content = request.content,
             post = post
         )
         post.createComment(comment)
         commentRepository.save(comment)
         postRepository.save(post)
-        return comment.toResponse()
+        return comment.toResponse(user)
     }
 
+    @PreAuthorize("hasRole('USER')")
     @Transactional
     fun updateComment(
         postId: Long,
         commentId: Long,
-        request: UpdateCommentRequest
+        request: UpdateCommentRequest,
+        member: MemberDetails
     ): CommentResponse {
         val comment =
             commentRepository.findByPostIdAndId(postId, commentId) ?: throw ModelNotFoundException("Comment", commentId)
 
+        if(comment.memberId != member.memberId) throw UnauthorizedAccessException() // 예외처리 예정
         val (content) = request
         comment.content = content
 
-        return commentRepository.save(comment).toResponse()
+        return commentRepository.save(comment).toResponse(memberRepository.findByIdOrNull(member.memberId)!!)
     }
 
+    @PreAuthorize("hasRole('USER')")
     @Transactional
-    fun deleteComment(postId: Long, commentId: Long) {
+    fun deleteComment(postId: Long, commentId: Long, member: MemberDetails) {
         val post = postRepository.findByIdOrNull(postId) ?: throw ModelNotFoundException("Post", postId)
         val comment = commentRepository.findByIdOrNull(commentId) ?: throw ModelNotFoundException("Comment", commentId)
+        if(comment.memberId != member.memberId) throw UnauthorizedAccessException() // 예외처리 예정
         post.deleteComment(comment)
         commentRepository.delete(comment)
     }
