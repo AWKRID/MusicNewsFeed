@@ -1,6 +1,6 @@
-package com.teame1i4.newsfeed.domain.post.repository
+package com.teame1i4.newsfeed.domain.musictype.repository
 
-import com.teame1i4.newsfeed.domain.post.model.MusicType
+import com.teame1i4.newsfeed.domain.musictype.model.MusicType
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface MusicTypeRepository: JpaRepository<MusicType, String> {

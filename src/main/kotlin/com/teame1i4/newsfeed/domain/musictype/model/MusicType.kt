@@ -1,4 +1,4 @@
-package com.teame1i4.newsfeed.domain.post.model
+package com.teame1i4.newsfeed.domain.musictype.model
 
 import jakarta.persistence.*
 
