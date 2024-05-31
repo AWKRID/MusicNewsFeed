@@ -1,6 +1,7 @@
 package com.teame1i4.newsfeed.domain.post.model
 
 import com.teame1i4.newsfeed.domain.comment.model.Comment
+import com.teame1i4.newsfeed.domain.member.model.Member
 import com.teame1i4.newsfeed.domain.post.dto.PostResponse
 import com.teame1i4.newsfeed.domain.post.dto.PostWithCommentResponse
 import com.teame1i4.newsfeed.domain.post.dto.UpdatePostRequest
@@ -107,14 +108,13 @@ class Post(
     }
 }
 
-fun Post.toResponse(): PostResponse {
+fun Post.toResponse(member: Member): PostResponse {
     return PostResponse(
         id = id!!,
         title = title,
         content = content,
         musicUrl = musicUrl,
-        // TODO(need to update)
-        username = "username for id $memberId",
+        member = member.toResponse(),
         musicType = musicType,
         tags = tags.split("#").filter(String::isNotEmpty),
         viewCount = viewCount,
@@ -125,13 +125,13 @@ fun Post.toResponse(): PostResponse {
     )
 }
 
-fun Post.toWithCommentResponse(): PostWithCommentResponse {
+fun Post.toWithCommentResponse(member: Member): PostWithCommentResponse {
     return PostWithCommentResponse(
         id = id!!,
         title = title,
         content = content,
         musicUrl = musicUrl,
-        username = "username for id $memberId",
+        member = member.toResponse(),
         musicType = musicType,
         tags = tags.split("#").filter(String::isNotEmpty),
         viewCount = viewCount,

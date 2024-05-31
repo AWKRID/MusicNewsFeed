@@ -48,4 +48,14 @@ class GlobalExceptionHandler {
     fun handleBadCredentialsException(e: BadCredentialsException) : ResponseEntity<ErrorResponse> {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse(e.message))
     }
+
+    @ExceptionHandler(UnauthorizedAccessException::class)
+    fun handleUnauthorizedAccessException(e: UnauthorizedAccessException) : ResponseEntity<ErrorResponse> {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorResponse(e.message))
+    }
+
+    @ExceptionHandler(UpvoteAlreadyExistException::class)
+    fun handleUUpvoteAlreadyExistException(e: UpvoteAlreadyExistException) : ResponseEntity<ErrorResponse> {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorResponse(e.message))
+    }
 }
