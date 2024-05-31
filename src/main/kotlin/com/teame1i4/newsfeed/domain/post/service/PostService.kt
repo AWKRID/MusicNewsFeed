@@ -114,7 +114,9 @@ class PostService(
 
         post.comments.sortBy { it.createdAt }
 
-        return post.toWithCommentResponse(memberRepository.findByIdOrNull(post.memberId)!!)
+        val commentResponses = post.comments.map { it.toResponse(memberRepository.findByIdOrNull(it.memberId)!!) }
+
+        return post.toWithCommentResponse(memberRepository.findByIdOrNull(post.memberId)!!, commentResponses)
     }
 
     private fun extractYoutubeId(musicUrl: String): String {

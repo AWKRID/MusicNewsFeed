@@ -1,5 +1,6 @@
 package com.teame1i4.newsfeed.domain.post.model
 
+import com.teame1i4.newsfeed.domain.comment.dto.response.CommentResponse
 import com.teame1i4.newsfeed.domain.comment.model.Comment
 import com.teame1i4.newsfeed.domain.member.model.Member
 import com.teame1i4.newsfeed.domain.post.dto.PostResponse
@@ -8,6 +9,7 @@ import com.teame1i4.newsfeed.domain.post.dto.UpdatePostRequest
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
+import org.springframework.data.repository.findByIdOrNull
 import java.time.LocalDateTime
 
 
@@ -125,7 +127,7 @@ fun Post.toResponse(member: Member): PostResponse {
     )
 }
 
-fun Post.toWithCommentResponse(member: Member): PostWithCommentResponse {
+fun Post.toWithCommentResponse(member: Member, commentResponses: List<CommentResponse>): PostWithCommentResponse {
     return PostWithCommentResponse(
         id = id!!,
         title = title,
@@ -138,6 +140,6 @@ fun Post.toWithCommentResponse(member: Member): PostWithCommentResponse {
         upvoteCount = upvoteCount,
         createdAt = createdAt,
         updatedAt = updatedAt,
-        comments = comments.map { it.toResponse() }
+        comments = commentResponses
     )
 }

@@ -23,14 +23,14 @@ class CommentService(
     private val memberRepository: MemberRepository
 ) {
     fun getCommentList(postId: Long): List<CommentResponse> {
-        return commentRepository.findAllByPostIdOrderByCreatedAtAsc(postId).map { it.toResponse() }
+        return commentRepository.findAllByPostIdOrderByCreatedAtAsc(postId).map { it.toResponse(memberRepository.findByIdOrNull(it.memberId)!!) }
     }
 
     @PreAuthorize("hasRole('USER')")
     @Transactional
     fun createComment(postId: Long, request: CreateCommentRequest, member: MemberDetails): CommentResponse {
         val post = postRepository.findByIdOrNull(postId) ?: throw ModelNotFoundException("Post", postId)
-        memberRepository.findByIdOrNull(member.memberId) ?: throw ModelNotFoundException("member", member.memberId)
+        val user = memberRepository.findByIdOrNull(member.memberId) ?: throw ModelNotFoundException("member", member.memberId)
 
         val comment = Comment(
             memberId = member.memberId,
@@ -40,7 +40,7 @@ class CommentService(
         post.createComment(comment)
         commentRepository.save(comment)
         postRepository.save(post)
-        return comment.toResponse()
+        return comment.toResponse(user)
     }
 
     @PreAuthorize("hasRole('USER')")
@@ -58,7 +58,7 @@ class CommentService(
         val (content) = request
         comment.content = content
 
-        return commentRepository.save(comment).toResponse()
+        return commentRepository.save(comment).toResponse(memberRepository.findByIdOrNull(member.memberId)!!)
     }
 
     @PreAuthorize("hasRole('USER')")
