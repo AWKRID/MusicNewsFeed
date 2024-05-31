@@ -110,7 +110,7 @@ class Post(
     }
 }
 
-fun Post.toResponse(member: Member): PostResponse {
+fun Post.toResponse(member: Member, hasUpvoted: Boolean): PostResponse {
     return PostResponse(
         id = id!!,
         title = title,
@@ -123,11 +123,13 @@ fun Post.toResponse(member: Member): PostResponse {
         upvoteCount = upvoteCount,
         createdAt = createdAt,
         updatedAt = updatedAt,
-        commentCount = commentCount
+        commentCount = commentCount,
+        hasUpvoted = hasUpvoted
     )
 }
 
-fun Post.toWithCommentResponse(member: Member, commentResponses: List<CommentResponse>): PostWithCommentResponse {
+fun Post.toWithCommentResponse(member: Member, commentResponses: List<CommentResponse>,
+                               hasUpvoted: Boolean): PostWithCommentResponse {
     return PostWithCommentResponse(
         id = id!!,
         title = title,
@@ -140,6 +142,7 @@ fun Post.toWithCommentResponse(member: Member, commentResponses: List<CommentRes
         upvoteCount = upvoteCount,
         createdAt = createdAt,
         updatedAt = updatedAt,
-        comments = commentResponses
+        comments = commentResponses,
+        hasUpvoted = hasUpvoted
     )
 }

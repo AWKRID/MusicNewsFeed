@@ -16,4 +16,5 @@ data class PostResponse(
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime,
     val commentCount: Long,
+    val hasUpvoted: Boolean
 )

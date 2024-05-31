@@ -34,7 +34,8 @@ class UpvoteService(
 
         post.addUpvote()
 
-        return post.toResponse(memberRepository.findByIdOrNull(user.id!!)!!)
+        return post.toResponse(memberRepository.findByIdOrNull(user.id!!)!!,
+            upvoteRepository.existsByMemberIdAndPostId(member.memberId,post.id!!))
     }
 
     @PreAuthorize("hasRole('USER')")
@@ -52,6 +53,7 @@ class UpvoteService(
 
         upvoteRepository.delete(upvote)
 
-        return post.toResponse(memberRepository.findByIdOrNull(member.memberId)!!)
+        return post.toResponse(memberRepository.findByIdOrNull(member.memberId)!!,
+            upvoteRepository.existsByMemberIdAndPostId(member.memberId,post.id!!))
     }
 }

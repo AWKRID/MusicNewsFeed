@@ -20,6 +20,7 @@ class PostController(
 
     @GetMapping("")
     fun getPosts(
+        @AuthenticationPrincipal member: MemberDetails?,
         @RequestParam(required = false, value = "tag") tag: String?,
         @RequestParam(required = false, name = "title") title: String?,
         @RequestParam(required = false, name = "music_type") musicType: String?,
@@ -27,14 +28,15 @@ class PostController(
     ): ResponseEntity<List<PostResponse>> {
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(postService.getPosts(tag, title, musicType, memberId))
+            .body(postService.getPosts(tag, title, musicType, memberId, member))
     }
 
     @GetMapping("/{postId}")
-    fun getPost(@PathVariable postId: Long): ResponseEntity<PostWithCommentResponse> {
+    fun getPost(@AuthenticationPrincipal member: MemberDetails?,
+                @PathVariable postId: Long): ResponseEntity<PostWithCommentResponse> {
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(postService.getPostById(postId))
+            .body(postService.getPostById(postId, member))
     }
 
 

@@ -14,6 +14,7 @@ import com.teame1i4.newsfeed.domain.member.repository.MemberRepository
 import com.teame1i4.newsfeed.domain.musictype.model.MusicType
 import com.teame1i4.newsfeed.domain.musictype.repository.MusicTypeRepository
 import com.teame1i4.newsfeed.domain.post.model.*
+import com.teame1i4.newsfeed.domain.upvote.repository.UpvoteRepository
 import jakarta.transaction.Transactional
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.access.prepost.PreAuthorize
@@ -24,6 +25,7 @@ class PostService(
     private val postRepository: PostRepository,
     private val musicTypeRepository: MusicTypeRepository,
     private val memberRepository: MemberRepository,
+    private val upvoteRepository: UpvoteRepository
 ) {
 
     @PreAuthorize("hasRole('USER')")
@@ -46,7 +48,8 @@ class PostService(
         musicType.updateCountPost(true)
         musicTypeRepository.save(musicType)
 
-        return postRepository.save(post).toResponse(memberRepository.findByIdOrNull(post.memberId)!!)
+        return postRepository.save(post).toResponse(memberRepository.findByIdOrNull(post.memberId)!!,
+            upvoteRepository.existsByMemberIdAndPostId(member.memberId,post.id!!))
     }
 
     @PreAuthorize("hasRole('USER')")
@@ -83,10 +86,11 @@ class PostService(
         musicType.updateCountPost(true)
         musicTypeRepository.save(musicType)
 
-        return postRepository.save(post).toResponse(memberRepository.findByIdOrNull(post.memberId)!!)
+        return postRepository.save(post).toResponse(memberRepository.findByIdOrNull(post.memberId)!!,
+            upvoteRepository.existsByMemberIdAndPostId(member.memberId,post.id!!))
     }
 
-    fun getPosts(tag: String?, title: String?, musicType: String?, memberId: Long?): List<PostResponse> {
+    fun getPosts(tag: String?, title: String?, musicType: String?, memberId: Long?, member: MemberDetails?): List<PostResponse> {
 
         val posts: List<Post> =
             if (!tag.isNullOrBlank()) postRepository.findAllByTagAndPostStatusOrderByCreatedAtDesc(tag)
@@ -104,19 +108,22 @@ class PostService(
             )
             else postRepository.findAllByPostStatusOrderByCreatedAtDesc(PostStatus.PUBLIC)
 
-        return posts.map { it.toResponse(memberRepository.findByIdOrNull(it.memberId)!!) }
+        return posts.map { it.toResponse(memberRepository.findByIdOrNull(it.memberId)!!,
+            if (member == null) false else upvoteRepository.existsByMemberIdAndPostId(member.memberId,it.id!!)) }
     }
 
     @Transactional
-    fun getPostById(postId: Long): PostWithCommentResponse {
+    fun getPostById(postId: Long, member: MemberDetails?): PostWithCommentResponse {
         val post: Post =
             postRepository.findByIdOrNull(postId).also { it?.view() } ?: throw ModelNotFoundException("Post", postId)
 
         post.comments.sortBy { it.createdAt }
 
+        val hasUpvoted = if (member == null) false else upvoteRepository.existsByMemberIdAndPostId(member.memberId,postId)
+
         val commentResponses = post.comments.map { it.toResponse(memberRepository.findByIdOrNull(it.memberId)!!) }
 
-        return post.toWithCommentResponse(memberRepository.findByIdOrNull(post.memberId)!!, commentResponses)
+        return post.toWithCommentResponse(memberRepository.findByIdOrNull(post.memberId)!!, commentResponses, hasUpvoted)
     }
 
     private fun extractYoutubeId(musicUrl: String): String {

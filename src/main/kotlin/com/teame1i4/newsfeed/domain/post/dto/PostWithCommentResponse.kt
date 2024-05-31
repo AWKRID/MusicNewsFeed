@@ -16,5 +16,6 @@ data class PostWithCommentResponse(
     val upvoteCount: Long,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime,
-    var comments: List<CommentResponse>
+    var comments: List<CommentResponse>,
+    val hasUpvoted: Boolean
 )
