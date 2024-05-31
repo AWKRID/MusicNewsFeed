@@ -37,4 +37,9 @@ class GlobalExceptionHandler {
     fun handleUpvoteNotFound(e: UpvoteNotFoundException) : ResponseEntity<ErrorResponse> {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse(e.message))
     }
+
+    @ExceptionHandler(YouTubeUrlNotValidException::class)
+    fun handleYoutubeUrlNotValid(e: YouTubeUrlNotValidException) : ResponseEntity<ErrorResponse> {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse(e.message))
+    }
 }
