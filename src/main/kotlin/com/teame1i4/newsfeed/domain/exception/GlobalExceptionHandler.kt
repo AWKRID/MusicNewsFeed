@@ -3,6 +3,7 @@ package com.teame1i4.newsfeed.domain.exception
 import com.teame1i4.newsfeed.domain.exception.dto.ErrorResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 
@@ -35,6 +36,11 @@ class GlobalExceptionHandler {
 
     @ExceptionHandler(UpvoteNotFoundException::class)
     fun handleUpvoteNotFound(e: UpvoteNotFoundException) : ResponseEntity<ErrorResponse> {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse(e.message))
+    }
+
+    @ExceptionHandler(BadCredentialsException::class)
+    fun handleBadCredentialsException(e: BadCredentialsException) : ResponseEntity<ErrorResponse> {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse(e.message))
     }
 }
