@@ -6,7 +6,6 @@ import com.teame1i4.newsfeed.domain.post.dto.PostWithCommentResponse
 import com.teame1i4.newsfeed.domain.post.dto.UpdatePostRequest
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
-import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.time.LocalDateTime
 
@@ -64,9 +63,9 @@ class Post(
     @OneToMany(mappedBy = "post")
     var comments: MutableList<Comment> = mutableListOf()
 
-    fun updatePost(request: UpdatePostRequest) {
+    fun updatePost(request: UpdatePostRequest, musicUrl: String) {
         this.title = request.title
-        this.musicUrl = request.musicUrl
+        this.musicUrl = musicUrl
         this.content = request.content
         this.tags = "#" + request.tags.joinToString("#") + "#"
         this.musicType = request.musicType
