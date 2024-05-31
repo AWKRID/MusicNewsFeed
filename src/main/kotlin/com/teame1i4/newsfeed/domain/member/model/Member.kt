@@ -19,7 +19,7 @@ class Member(
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
-    var role : MemberRole =MemberRole.USER
+    var role : MemberRole = MemberRole.USER
 ) {
 
     constructor(request: SignUpRequest, encoder: PasswordEncoder):
@@ -28,10 +28,6 @@ class Member(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "role", nullable = false)
-    var role: MemberRole = MemberRole.USER
 
     fun toResponse(): MemberResponse = MemberResponse(id!!, username)
     fun toUserDetailsParameter(): UserDetailsParameter = UserDetailsParameter(id!!, username, password, role.toString())
