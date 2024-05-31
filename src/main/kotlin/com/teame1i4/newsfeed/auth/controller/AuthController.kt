@@ -20,7 +20,7 @@ class AuthController (
         ResponseEntity.status(HttpStatus.CREATED)
             .body(authService.signUp(request))
 
-    @GetMapping("/signin")
+    @PostMapping("/signin")
     fun signIn(@RequestBody request: SignInRequest): ResponseEntity<SignInResponse> =
         ResponseEntity.status(HttpStatus.OK)
             .body(authService.signIn(request))
