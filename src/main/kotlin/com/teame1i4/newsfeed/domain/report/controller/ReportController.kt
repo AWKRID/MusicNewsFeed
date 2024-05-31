@@ -20,7 +20,7 @@ class ReportController(
 //    }
     @PostMapping
     fun createReport(
-    @AuthenticationPrincipal member: MemberDetails,
+    @AuthenticationPrincipal member: MemberDetails?,
     @PathVariable postId: Long
     ): ResponseEntity<Unit> {
         reportService.createReport(postId, member)

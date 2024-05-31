@@ -23,14 +23,19 @@ class CommentService(
     private val memberRepository: MemberRepository
 ) {
     fun getCommentList(postId: Long): List<CommentResponse> {
-        return commentRepository.findAllByPostIdOrderByCreatedAtAsc(postId).map { it.toResponse(memberRepository.findByIdOrNull(it.memberId)!!) }
+        return commentRepository.findAllByPostIdOrderByCreatedAtAsc(postId)
+            .map { it.toResponse(memberRepository.findByIdOrNull(it.memberId)!!) }
     }
 
     @PreAuthorize("hasRole('USER')")
     @Transactional
-    fun createComment(postId: Long, request: CreateCommentRequest, member: MemberDetails): CommentResponse {
+    fun createComment(postId: Long, request: CreateCommentRequest, member: MemberDetails?): CommentResponse {
+
+        if (member == null) throw UnauthorizedAccessException()
+
         val post = postRepository.findByIdOrNull(postId) ?: throw ModelNotFoundException("Post", postId)
-        val user = memberRepository.findByIdOrNull(member.memberId) ?: throw ModelNotFoundException("member", member.memberId)
+        val user =
+            memberRepository.findByIdOrNull(member.memberId) ?: throw ModelNotFoundException("member", member.memberId)
 
         val comment = Comment(
             memberId = member.memberId,
@@ -49,12 +54,15 @@ class CommentService(
         postId: Long,
         commentId: Long,
         request: UpdateCommentRequest,
-        member: MemberDetails
+        member: MemberDetails?
     ): CommentResponse {
+
+        if (member == null) throw UnauthorizedAccessException()
+
         val comment =
             commentRepository.findByPostIdAndId(postId, commentId) ?: throw ModelNotFoundException("Comment", commentId)
 
-        if(comment.memberId != member.memberId) throw UnauthorizedAccessException() // 예외처리 예정
+        if (comment.memberId != member.memberId) throw UnauthorizedAccessException() // 예외처리 예정
         val (content) = request
         comment.content = content
 
@@ -63,10 +71,13 @@ class CommentService(
 
     @PreAuthorize("hasRole('USER')")
     @Transactional
-    fun deleteComment(postId: Long, commentId: Long, member: MemberDetails) {
+    fun deleteComment(postId: Long, commentId: Long, member: MemberDetails?) {
+
+        if (member == null) throw UnauthorizedAccessException()
+
         val post = postRepository.findByIdOrNull(postId) ?: throw ModelNotFoundException("Post", postId)
         val comment = commentRepository.findByIdOrNull(commentId) ?: throw ModelNotFoundException("Comment", commentId)
-        if(comment.memberId != member.memberId) throw UnauthorizedAccessException() // 예외처리 예정
+        if (comment.memberId != member.memberId) throw UnauthorizedAccessException() // 예외처리 예정
         post.deleteComment(comment)
         commentRepository.delete(comment)
     }

@@ -24,7 +24,10 @@ class UpvoteService(
 ) {
     @PreAuthorize("hasRole('USER')")
     @Transactional
-    fun upvotePost(postId: Long, member: MemberDetails): PostResponse {
+    fun upvotePost(postId: Long, member: MemberDetails?): PostResponse {
+
+        if (member == null)  throw UnauthorizedAccessException()
+
         val post = postRepository.findByIdOrNull(postId) ?: throw ModelNotFoundException("Post", postId)
         val user = memberRepository.findByIdOrNull(member.memberId) ?: throw ModelNotFoundException("Member", member.memberId)
 
@@ -35,12 +38,15 @@ class UpvoteService(
         post.addUpvote()
 
         return post.toResponse(memberRepository.findByIdOrNull(user.id!!)!!,
-            upvoteRepository.existsByMemberIdAndPostId(member.memberId,post.id!!))
+            true)
     }
 
     @PreAuthorize("hasRole('USER')")
     @Transactional
-    fun cancelUpvote(postId: Long, member: MemberDetails): PostResponse {
+    fun cancelUpvote(postId: Long, member: MemberDetails?): PostResponse {
+
+        if (member == null)  throw UnauthorizedAccessException()
+
         val post = postRepository.findByIdOrNull(postId) ?: throw ModelNotFoundException("Post", postId)
 
         if(!memberRepository.existsById(member.memberId))  throw ModelNotFoundException("Member", member.memberId)
@@ -54,6 +60,6 @@ class UpvoteService(
         upvoteRepository.delete(upvote)
 
         return post.toResponse(memberRepository.findByIdOrNull(member.memberId)!!,
-            upvoteRepository.existsByMemberIdAndPostId(member.memberId,post.id!!))
+            false)
     }
 }

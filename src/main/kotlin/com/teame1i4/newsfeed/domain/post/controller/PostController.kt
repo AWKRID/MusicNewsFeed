@@ -42,7 +42,7 @@ class PostController(
 
     @PostMapping
     fun createPost(
-        @AuthenticationPrincipal member: MemberDetails,
+        @AuthenticationPrincipal member: MemberDetails?,
         @RequestBody createPostRequest: CreatePostRequest): ResponseEntity<PostResponse> {
         return ResponseEntity
             .status(HttpStatus.CREATED)
@@ -51,7 +51,7 @@ class PostController(
 
     @DeleteMapping("/{postId}")
     fun deletePost(
-        @AuthenticationPrincipal member: MemberDetails,
+        @AuthenticationPrincipal member: MemberDetails?,
         @PathVariable(value = "postId") id: Long): ResponseEntity<Unit> {
         return ResponseEntity
             .status(HttpStatus.NO_CONTENT)
@@ -60,7 +60,7 @@ class PostController(
 
     @PutMapping("/{postId}")
     fun updatePost(
-        @AuthenticationPrincipal member: MemberDetails,
+        @AuthenticationPrincipal member: MemberDetails?,
         @PathVariable postId: Long,
         @RequestBody updatePostRequest: UpdatePostRequest
     ): ResponseEntity<PostResponse> {

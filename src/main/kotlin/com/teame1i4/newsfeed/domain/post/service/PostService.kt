@@ -29,8 +29,11 @@ class PostService(
 ) {
 
     @PreAuthorize("hasRole('USER')")
-    fun createPost(request: CreatePostRequest, member: MemberDetails): PostResponse {
-        if(!musicTypeRepository.existsById(request.musicType)) throw TypeNotFoundException(request.musicType)
+    fun createPost(request: CreatePostRequest, member: MemberDetails?): PostResponse {
+
+        if (member == null) throw UnauthorizedAccessException()
+
+        if (!musicTypeRepository.existsById(request.musicType)) throw TypeNotFoundException(request.musicType)
 //        memberRepository.findByIdOrNull(member.memberId) ?: throw ModelNotFoundException("member", member.memberId)
         val youtubeId = extractYoutubeId(request.musicUrl)
 
@@ -48,16 +51,23 @@ class PostService(
         musicType.updateCountPost(true)
         musicTypeRepository.save(musicType)
 
-        return postRepository.save(post).toResponse(memberRepository.findByIdOrNull(post.memberId)!!,
-            upvoteRepository.existsByMemberIdAndPostId(member.memberId,post.id!!))
+        return postRepository.save(post).toResponse(
+            memberRepository.findByIdOrNull(post.memberId)!!,
+            upvoteRepository.existsByMemberIdAndPostId(member.memberId, post.id!!)
+        )
     }
 
     @PreAuthorize("hasRole('USER')")
     @Transactional
-    fun deletePost(postId: Long, member: MemberDetails) {
+    fun deletePost(postId: Long, member: MemberDetails?) {
+
+        if (member == null) throw UnauthorizedAccessException()
+
         val post: Post = postRepository.findByIdOrNull(postId) ?: throw ModelNotFoundException("Post", postId)
 
-        if(post.memberId != member.memberId) throw UnauthorizedAccessException()
+        if (post.memberId != member.memberId) throw UnauthorizedAccessException()
+
+        if (post.postStatus == PostStatus.HIDDEN) throw UnauthorizedAccessException()
 
         postRepository.delete(post)
 
@@ -69,9 +79,12 @@ class PostService(
 
     @PreAuthorize("hasRole('USER')")
     @Transactional
-    fun updatePost(postId: Long, request: UpdatePostRequest, member: MemberDetails): PostResponse {
+    fun updatePost(postId: Long, request: UpdatePostRequest, member: MemberDetails?): PostResponse {
+
+        if (member == null) throw UnauthorizedAccessException()
+
         val post = postRepository.findByIdOrNull(postId) ?: throw ModelNotFoundException("Post", postId)
-        if(post.memberId != member.memberId) throw UnauthorizedAccessException()
+        if (post.memberId != member.memberId) throw UnauthorizedAccessException()
         var musicType: MusicType =
             musicTypeRepository.findByIdOrNull(request.musicType) ?: throw TypeNotFoundException(request.musicType)
 
@@ -86,11 +99,19 @@ class PostService(
         musicType.updateCountPost(true)
         musicTypeRepository.save(musicType)
 
-        return postRepository.save(post).toResponse(memberRepository.findByIdOrNull(post.memberId)!!,
-            upvoteRepository.existsByMemberIdAndPostId(member.memberId,post.id!!))
+        return postRepository.save(post).toResponse(
+            memberRepository.findByIdOrNull(post.memberId)!!,
+            upvoteRepository.existsByMemberIdAndPostId(member.memberId, post.id!!)
+        )
     }
 
-    fun getPosts(tag: String?, title: String?, musicType: String?, memberId: Long?, member: MemberDetails?): List<PostResponse> {
+    fun getPosts(
+        tag: String?,
+        title: String?,
+        musicType: String?,
+        memberId: Long?,
+        member: MemberDetails?
+    ): List<PostResponse> {
 
         val posts: List<Post> =
             if (!tag.isNullOrBlank()) postRepository.findAllByTagAndPostStatusOrderByCreatedAtDesc(tag)
@@ -108,8 +129,12 @@ class PostService(
             )
             else postRepository.findAllByPostStatusOrderByCreatedAtDesc(PostStatus.PUBLIC)
 
-        return posts.map { it.toResponse(memberRepository.findByIdOrNull(it.memberId)!!,
-            if (member == null) false else upvoteRepository.existsByMemberIdAndPostId(member.memberId,it.id!!)) }
+        return posts.map {
+            it.toResponse(
+                memberRepository.findByIdOrNull(it.memberId)!!,
+                if (member == null) false else upvoteRepository.existsByMemberIdAndPostId(member.memberId, it.id!!)
+            )
+        }
     }
 
     @Transactional
@@ -119,15 +144,21 @@ class PostService(
 
         post.comments.sortBy { it.createdAt }
 
-        val hasUpvoted = if (member == null) false else upvoteRepository.existsByMemberIdAndPostId(member.memberId,postId)
+        val hasUpvoted =
+            if (member == null) false else upvoteRepository.existsByMemberIdAndPostId(member.memberId, postId)
 
         val commentResponses = post.comments.map { it.toResponse(memberRepository.findByIdOrNull(it.memberId)!!) }
 
-        return post.toWithCommentResponse(memberRepository.findByIdOrNull(post.memberId)!!, commentResponses, hasUpvoted)
+        return post.toWithCommentResponse(
+            memberRepository.findByIdOrNull(post.memberId)!!,
+            commentResponses,
+            hasUpvoted
+        )
     }
 
     private fun extractYoutubeId(musicUrl: String): String {
-        val regex = Regex("""(?:https?://)?(?:www.|m.)?(?:youtube.com/watch\?v=|youtu.be/|youtube.com/embed/)(?<url>[a-zA-Z0-9_-]{11})""")
+        val regex =
+            Regex("""(?:https?://)?(?:www.|m.)?(?:youtube.com/watch\?v=|youtu.be/|youtube.com/embed/)(?<url>[a-zA-Z0-9_-]{11})""")
 
         val youtubeId = regex.find(musicUrl)?.groups?.get("url")?.value ?: throw YouTubeUrlNotValidException(musicUrl)
 

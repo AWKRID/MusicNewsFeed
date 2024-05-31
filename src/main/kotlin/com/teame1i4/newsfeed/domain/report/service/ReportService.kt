@@ -2,6 +2,7 @@ package com.teame1i4.newsfeed.domain.report.service
 
 import com.teame1i4.newsfeed.domain.exception.AlreadyReportedException
 import com.teame1i4.newsfeed.domain.exception.ModelNotFoundException
+import com.teame1i4.newsfeed.domain.exception.UnauthorizedAccessException
 import com.teame1i4.newsfeed.domain.member.adapter.MemberDetails
 import com.teame1i4.newsfeed.domain.post.repository.PostRepository
 import com.teame1i4.newsfeed.domain.report.model.Report
@@ -22,7 +23,10 @@ class ReportService(
 
     @PreAuthorize("hasRole('USER')")
     @Transactional
-    fun createReport(postId: Long, member: MemberDetails) {
+    fun createReport(postId: Long, member: MemberDetails?) {
+
+        if (member == null)  throw UnauthorizedAccessException()
+
         val post = postRepository.findByIdOrNull(postId) ?: throw ModelNotFoundException("Post", postId)
         val user = memberRepository.findByIdOrNull(member.memberId) ?: throw ModelNotFoundException("Member", member.memberId)
 

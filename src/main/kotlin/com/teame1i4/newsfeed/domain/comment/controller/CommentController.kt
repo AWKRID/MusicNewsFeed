@@ -26,7 +26,7 @@ class CommentController(
 
     @PostMapping
     fun createComment(
-        @AuthenticationPrincipal member: MemberDetails,
+        @AuthenticationPrincipal member: MemberDetails?,
         @PathVariable postId: Long,
         @RequestBody request: CreateCommentRequest
     ): ResponseEntity<CommentResponse> {
@@ -37,7 +37,7 @@ class CommentController(
 
     @PutMapping("/{commentId}")
     fun updateComment(
-        @AuthenticationPrincipal member: MemberDetails,
+        @AuthenticationPrincipal member: MemberDetails?,
         @PathVariable postId: Long,
         @PathVariable commentId: Long,
         @RequestBody request: UpdateCommentRequest
@@ -49,7 +49,7 @@ class CommentController(
 
     @DeleteMapping("/{commentId}")
     fun deleteComment(
-        @AuthenticationPrincipal member: MemberDetails,
+        @AuthenticationPrincipal member: MemberDetails?,
         @PathVariable postId: Long,
         @PathVariable commentId: Long,
     ): ResponseEntity<Unit> {

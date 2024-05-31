@@ -14,7 +14,7 @@ class UpvoteController(
 ) {
     @PostMapping()
     fun upvotePost(
-        @AuthenticationPrincipal member: MemberDetails,
+        @AuthenticationPrincipal member: MemberDetails?,
         @PathVariable postId: Long
     ): ResponseEntity<PostResponse> {
         return ResponseEntity.ok(upvoteService.upvotePost(postId, member))
@@ -22,7 +22,7 @@ class UpvoteController(
 
     @DeleteMapping()
     fun upvoteCancelPost(
-        @AuthenticationPrincipal member: MemberDetails,
+        @AuthenticationPrincipal member: MemberDetails?,
         @PathVariable postId: Long
     ): ResponseEntity<PostResponse> {
         return ResponseEntity.ok(upvoteService.cancelUpvote(postId, member))
