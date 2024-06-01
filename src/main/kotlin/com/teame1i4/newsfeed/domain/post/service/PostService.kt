@@ -5,6 +5,7 @@ import com.teame1i4.newsfeed.domain.exception.ModelNotFoundException
 import com.teame1i4.newsfeed.domain.exception.TypeNotFoundException
 import com.teame1i4.newsfeed.domain.exception.UnauthorizedAccessException
 import com.teame1i4.newsfeed.domain.exception.YouTubeUrlNotValidException
+import com.teame1i4.newsfeed.domain.follow.repository.FollowRepository
 import com.teame1i4.newsfeed.domain.member.adapter.MemberDetails
 import com.teame1i4.newsfeed.domain.member.repository.MemberRepository
 import com.teame1i4.newsfeed.domain.musictype.model.MusicType
@@ -29,7 +30,8 @@ class PostService(
     private val postRepository: PostRepository,
     private val musicTypeRepository: MusicTypeRepository,
     private val memberRepository: MemberRepository,
-    private val upvoteRepository: UpvoteRepository
+    private val upvoteRepository: UpvoteRepository,
+    private val followRepository: FollowRepository
 ) {
 
     @PreAuthorize("hasRole('USER')")
@@ -118,7 +120,6 @@ class PostService(
         musicType: String?,
         memberId: Long?
     ): List<PostResponse> {
-
         val posts: List<Post> =
             if (!tag.isNullOrBlank()) postRepository.findAllByTagAndPostStatusOrderByCreatedAtDesc(tag)
             else if (!title.isNullOrBlank()) postRepository.findAllByTitleContainingAndPostStatusOrderByCreatedAtDesc(
@@ -164,11 +165,27 @@ class PostService(
         )
     }
 
+    @PreAuthorize("hasRole('USER')")
+    fun getFeeds(member: MemberDetails): List<PostResponse> {
+
+        val followerMemberIds: List<Long> = followRepository.findAllByMemberId(member.id).map { it.followerMemberId }
+
+        val posts: List<Post> =
+            postRepository.findAllByMemberIdInAndPostStatusOrderByCreatedAtDesc(followerMemberIds, PostStatus.PUBLIC)
+
+
+        return posts.map {
+            it.toResponse(
+                memberRepository.findByIdOrNull(it.memberId)!!,
+                upvoteRepository.existsByMemberIdAndPostId(member.id, it.id!!)
+            )
+        }
+    }
+
     private fun extractYoutubeId(musicUrl: String): String {
         val regex =
             Regex("""(?:https?://)?(?:www.|m.)?(?:youtube.com/watch\?v=|youtu.be/|youtube.com/embed/)(?<url>[a-zA-Z0-9_-]{11})""")
 
         return regex.find(musicUrl)?.groups?.get("url")?.value ?: throw YouTubeUrlNotValidException(musicUrl)
     }
-
 }

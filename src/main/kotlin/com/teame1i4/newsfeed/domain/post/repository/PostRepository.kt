@@ -14,4 +14,5 @@ interface PostRepository : JpaRepository<Post, Long> {
     fun findAllByMusicTypeAndPostStatusOrderByCreatedAtDesc(musicTypeId: String, postStatus: PostStatus): List<Post>
     fun findAllByMemberIdAndPostStatusOrderByCreatedAtDesc(memberId: Long, postStatus: PostStatus): List<Post>
     fun findAllByPostStatusOrderByCreatedAtDesc(postStatus: PostStatus): List<Post>
+    fun findAllByMemberIdInAndPostStatusOrderByCreatedAtDesc(memberIds: List<Long>, postStatus: PostStatus): List<Post>
 }

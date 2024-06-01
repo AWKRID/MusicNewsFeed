@@ -18,8 +18,19 @@ import org.springframework.web.bind.annotation.*
 class PostController(
     private val postService: PostService
 ) {
+    @GetMapping("/feeds")
+    fun getFeeds(
+        @AuthenticationPrincipal member : MemberDetails?
+    ) : ResponseEntity<List<PostResponse>>{
 
-    @GetMapping("")
+        if (member == null) throw UnauthorizedAccessException()
+
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(postService.getFeeds(member))
+    }
+
+    @GetMapping
     fun getPosts(
         @AuthenticationPrincipal member: MemberDetails?,
         @RequestParam(required = false, value = "tag") tag: String?,
@@ -28,7 +39,7 @@ class PostController(
         @RequestParam(required = false, name = "memberId") memberId: Long?
     ): ResponseEntity<List<PostResponse>> = ResponseEntity
         .status(HttpStatus.OK)
-        .body(postService.getPosts(member ?: throw UnauthorizedAccessException(), tag, title, musicType, memberId))
+        .body(postService.getPosts(member, tag, title, musicType, memberId))
 
     @GetMapping("/{postId}")
     fun getPost(
@@ -36,7 +47,7 @@ class PostController(
         @PathVariable postId: Long
     ): ResponseEntity<PostWithCommentResponse> = ResponseEntity
         .status(HttpStatus.OK)
-        .body(postService.getPostById(member ?: throw UnauthorizedAccessException(), postId))
+        .body(postService.getPostById(member, postId))
 
 
     @PostMapping
