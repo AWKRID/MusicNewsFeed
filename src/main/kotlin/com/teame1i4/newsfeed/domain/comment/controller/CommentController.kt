@@ -4,6 +4,7 @@ import com.teame1i4.newsfeed.domain.comment.dto.request.CreateCommentRequest
 import com.teame1i4.newsfeed.domain.comment.dto.request.UpdateCommentRequest
 import com.teame1i4.newsfeed.domain.comment.dto.response.CommentResponse
 import com.teame1i4.newsfeed.domain.comment.service.CommentService
+import com.teame1i4.newsfeed.domain.exception.UnauthorizedAccessException
 import com.teame1i4.newsfeed.domain.member.adapter.MemberDetails
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -18,22 +19,18 @@ class CommentController(
     @GetMapping
     fun getCommentList(
         @PathVariable postId: Long
-    ): ResponseEntity<List<CommentResponse>> {
-        return ResponseEntity.ok(
-            commentService.getCommentList(postId)
-        )
-    }
+    ): ResponseEntity<List<CommentResponse>> = ResponseEntity
+        .status(HttpStatus.OK)
+        .body(commentService.getCommentList(postId))
 
     @PostMapping
     fun createComment(
         @AuthenticationPrincipal member: MemberDetails?,
         @PathVariable postId: Long,
         @RequestBody request: CreateCommentRequest
-    ): ResponseEntity<CommentResponse> {
-        return ResponseEntity
-            .status(HttpStatus.CREATED)
-            .body(commentService.createComment(postId, request, member))
-    }
+    ): ResponseEntity<CommentResponse> = ResponseEntity
+        .status(HttpStatus.CREATED)
+        .body(commentService.createComment(postId, request, member ?: throw UnauthorizedAccessException()))
 
     @PutMapping("/{commentId}")
     fun updateComment(
@@ -41,21 +38,17 @@ class CommentController(
         @PathVariable postId: Long,
         @PathVariable commentId: Long,
         @RequestBody request: UpdateCommentRequest
-    ): ResponseEntity<CommentResponse> {
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .body(commentService.updateComment(postId, commentId, request, member))
-    }
+    ): ResponseEntity<CommentResponse> = ResponseEntity
+        .status(HttpStatus.OK)
+        .body(commentService.updateComment(postId, commentId, request, member ?: throw UnauthorizedAccessException()))
 
     @DeleteMapping("/{commentId}")
     fun deleteComment(
         @AuthenticationPrincipal member: MemberDetails?,
         @PathVariable postId: Long,
         @PathVariable commentId: Long,
-    ): ResponseEntity<Unit> {
-        return ResponseEntity
-            .status(HttpStatus.NO_CONTENT)
-            .body(commentService.deleteComment(postId, commentId, member))
-    }
+    ): ResponseEntity<Unit> = ResponseEntity
+        .status(HttpStatus.NO_CONTENT)
+        .body(commentService.deleteComment(postId, commentId, member ?: throw UnauthorizedAccessException()))
 
 }

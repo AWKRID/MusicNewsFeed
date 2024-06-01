@@ -23,15 +23,42 @@ class Member(
 ) {
 
     constructor(request: SignUpRequest, encoder: PasswordEncoder) :
-            this(request.username, encoder.encode(request.password))
+            this(
+                username = request.username,
+                password = encoder.encode(request.password)
+            )
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
 
-    fun toResponse(): MemberResponse = MemberResponse(id!!, username)
-    fun toUserDetailsParameter(): UserDetailsParameter = UserDetailsParameter(id!!, username, password, role.toString())
-    fun toSignUpResponse(): SignUpResponse = SignUpResponse(id!!, username, role.toString())
-    fun toSignInResponse(accessToken: String): SignInResponse =
-        SignInResponse(id!!, username, role.toString(), accessToken)
 }
+
+fun Member.toResponse(): MemberResponse =
+    MemberResponse(
+        id = id!!,
+        username = username
+    )
+
+fun Member.toUserDetailsParameter(): UserDetailsParameter =
+    UserDetailsParameter(
+        memberId = id!!,
+        nickname = username,
+        password = password,
+        role = role.toString()
+    )
+
+fun Member.toSignUpResponse(): SignUpResponse =
+    SignUpResponse(
+        id = id!!,
+        username = username,
+        role = role.toString()
+    )
+
+fun Member.toSignInResponse(accessToken: String): SignInResponse =
+    SignInResponse(
+        id = id!!,
+        username = username,
+        role = role.toString(),
+        accessToken = accessToken
+    )
