@@ -173,11 +173,16 @@ class PostService(
         val posts: List<Post> =
             postRepository.findAllByMemberIdInAndPostStatusOrderByCreatedAtDesc(followerMemberIds, PostStatus.PUBLIC)
 
+        val memberIds = posts.map { it.memberId }.toSet()
+        val members = memberRepository.findAllByIdIn(memberIds)
+
+//        val upvotes = upvoteRepository.findAllByMemberId(member.id).map{it.post.id}
 
         return posts.map {
             it.toResponse(
-                memberRepository.findByIdOrNull(it.memberId)!!,
+                members.find { item -> item.id == it.memberId }!!,
                 upvoteRepository.existsByMemberIdAndPostId(member.id, it.id!!)
+//                it.id in upvotes
             )
         }
     }
