@@ -17,17 +17,19 @@ class JwtAuthenticationFilter(
 ): OncePerRequestFilter() {
 
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, filterChain: FilterChain) {
-        val authorizationHeader = request.getHeader("Authorization")
+        val token = jwtUtility.resolveToken(request)
 
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            val token = authorizationHeader.substring(7)
+        jwtUtility.resolveToken(request)?.let { token ->
             jwtUtility.validateToken(token).onFailure { throw it }
 
-            val memberId = jwtUtility.parseClaims(token)["id"]
-            val memberDetails = memberDetailsService.loadUserByUsername(memberId.toString())
+            jwtUtility.parseClaims(token).let { it ->
+                val id = it["id"]
+                val name = it["name"]
 
-            SecurityContextHolder.getContext().authentication =
-                UsernamePasswordAuthenticationToken(memberDetails, null, memberDetails.authorities)
+                val memberDetails = memberDetailsService.loadUserByUsername("${id}:${name}")
+                SecurityContextHolder.getContext().authentication =
+                    UsernamePasswordAuthenticationToken(memberDetails, null, memberDetails.authorities)
+            }
         }
 
         filterChain.doFilter(request, response)

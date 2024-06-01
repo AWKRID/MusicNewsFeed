@@ -1,8 +1,9 @@
 package com.teame1i4.newsfeed.domain.report.controller
 
-import com.teame1i4.newsfeed.domain.report.dto.CreateReportRequest
+import com.teame1i4.newsfeed.domain.member.adapter.MemberDetails
 import com.teame1i4.newsfeed.domain.report.service.ReportService
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -19,10 +20,10 @@ class ReportController(
 //    }
     @PostMapping
     fun createReport(
-        @PathVariable postId: Long,
-        @RequestBody request: CreateReportRequest
+    @AuthenticationPrincipal member: MemberDetails?,
+    @PathVariable postId: Long
     ): ResponseEntity<Unit> {
-        reportService.createReport(postId, request)
+        reportService.createReport(postId, member)
         return ResponseEntity.ok(Unit)
     }
 }

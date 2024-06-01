@@ -4,6 +4,7 @@ import com.teame1i4.newsfeed.domain.exception.dto.ErrorResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.BadCredentialsException
+import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 
@@ -47,5 +48,20 @@ class GlobalExceptionHandler {
     @ExceptionHandler(BadCredentialsException::class)
     fun handleBadCredentialsException(e: BadCredentialsException) : ResponseEntity<ErrorResponse> {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse(e.message))
+    }
+
+    @ExceptionHandler(UnauthorizedAccessException::class)
+    fun handleUnauthorizedAccessException(e: UnauthorizedAccessException) : ResponseEntity<ErrorResponse> {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorResponse(e.message))
+    }
+
+    @ExceptionHandler(UpvoteAlreadyExistException::class)
+    fun handleUUpvoteAlreadyExistException(e: UpvoteAlreadyExistException) : ResponseEntity<ErrorResponse> {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorResponse(e.message))
+    }
+
+    @ExceptionHandler(UsernameNotFoundException::class)
+    fun handleUsernameNotFoundException(e: UsernameNotFoundException) : ResponseEntity<ErrorResponse> {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponse(e.message))
     }
 }
