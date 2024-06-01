@@ -19,10 +19,10 @@ class Member(
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
-    var role : MemberRole = MemberRole.USER
+    var role: MemberRole = MemberRole.USER
 ) {
 
-    constructor(request: SignUpRequest, encoder: PasswordEncoder):
+    constructor(request: SignUpRequest, encoder: PasswordEncoder) :
             this(request.username, encoder.encode(request.password))
 
     @Id
@@ -32,5 +32,6 @@ class Member(
     fun toResponse(): MemberResponse = MemberResponse(id!!, username)
     fun toUserDetailsParameter(): UserDetailsParameter = UserDetailsParameter(id!!, username, password, role.toString())
     fun toSignUpResponse(): SignUpResponse = SignUpResponse(id!!, username, role.toString())
-    fun toSignInResponse(accessToken: String): SignInResponse = SignInResponse(id!!, username, role.toString(), accessToken)
+    fun toSignInResponse(accessToken: String): SignInResponse =
+        SignInResponse(id!!, username, role.toString(), accessToken)
 }

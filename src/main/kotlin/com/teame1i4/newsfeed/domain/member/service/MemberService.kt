@@ -14,8 +14,8 @@ class MemberService(
 ) {
 
     fun createMember(request: CreateMemberRequest): MemberResponse = memberRepository.save(
-            Member(request.username, request.password)
-        ).toResponse()
+        Member(request.username, request.password)
+    ).toResponse()
 
     fun getMember(memberId: Long): MemberResponse = (memberRepository.findByIdOrNull(memberId)
         ?: throw ModelNotFoundException("Member", memberId))

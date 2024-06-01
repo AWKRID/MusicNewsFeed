@@ -1,6 +1,6 @@
 package com.teame1i4.newsfeed.domain.post.model
 
-enum class PostStatus{
+enum class PostStatus {
     PUBLIC,
-    HIDDEN,
+    HIDDEN
 }

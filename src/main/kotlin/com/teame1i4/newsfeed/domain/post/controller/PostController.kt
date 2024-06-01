@@ -32,8 +32,10 @@ class PostController(
     }
 
     @GetMapping("/{postId}")
-    fun getPost(@AuthenticationPrincipal member: MemberDetails?,
-                @PathVariable postId: Long): ResponseEntity<PostWithCommentResponse> {
+    fun getPost(
+        @AuthenticationPrincipal member: MemberDetails?,
+        @PathVariable postId: Long
+    ): ResponseEntity<PostWithCommentResponse> {
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(postService.getPostById(postId, member))
@@ -43,7 +45,8 @@ class PostController(
     @PostMapping
     fun createPost(
         @AuthenticationPrincipal member: MemberDetails?,
-        @RequestBody createPostRequest: CreatePostRequest): ResponseEntity<PostResponse> {
+        @RequestBody createPostRequest: CreatePostRequest
+    ): ResponseEntity<PostResponse> {
         return ResponseEntity
             .status(HttpStatus.CREATED)
             .body(postService.createPost(createPostRequest, member))
@@ -52,7 +55,8 @@ class PostController(
     @DeleteMapping("/{postId}")
     fun deletePost(
         @AuthenticationPrincipal member: MemberDetails?,
-        @PathVariable(value = "postId") id: Long): ResponseEntity<Unit> {
+        @PathVariable(value = "postId") id: Long
+    ): ResponseEntity<Unit> {
         return ResponseEntity
             .status(HttpStatus.NO_CONTENT)
             .body(postService.deletePost(id, member))

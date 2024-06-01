@@ -21,7 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @Configuration
 @EnableMethodSecurity(prePostEnabled = true)
-class WebSecurityConfig (
+class WebSecurityConfig(
     private val entryPoint: AuthenticationEntryPoint,
     private val accessDeniedHandler: AccessDeniedHandler,
     private val memberDetailsService: MemberDetailsService,
@@ -35,19 +35,25 @@ class WebSecurityConfig (
     fun filterChain(http: HttpSecurity): SecurityFilterChain =
         http
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
-            .authorizeHttpRequests { it
-                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html", "/swagger-resources/**").permitAll()
-                .anyRequest().permitAll()
+            .authorizeHttpRequests {
+                it
+                    .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html", "/swagger-resources/**")
+                    .permitAll()
+                    .anyRequest().permitAll()
             }
             .httpBasic { it.disable() }
             .formLogin { it.disable() }
             .csrf { it.disable() }
             .cors(Customizer.withDefaults())
-            .addFilterBefore(JwtAuthenticationFilter(memberDetailsService, jwtUtility), UsernamePasswordAuthenticationFilter::class.java)
+            .addFilterBefore(
+                JwtAuthenticationFilter(memberDetailsService, jwtUtility),
+                UsernamePasswordAuthenticationFilter::class.java
+            )
             .addFilterBefore(ExceptionHandlerFilter(), JwtAuthenticationFilter::class.java)
-            .exceptionHandling { it
-                .authenticationEntryPoint(entryPoint)
-                .accessDeniedHandler(accessDeniedHandler)
+            .exceptionHandling {
+                it
+                    .authenticationEntryPoint(entryPoint)
+                    .accessDeniedHandler(accessDeniedHandler)
             }
             .build()
 }

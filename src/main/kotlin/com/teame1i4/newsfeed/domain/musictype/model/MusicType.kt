@@ -1,12 +1,14 @@
 package com.teame1i4.newsfeed.domain.musictype.model
 
 import com.teame1i4.newsfeed.domain.musictype.dto.MusicTypeCountResponse
-import jakarta.persistence.*
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.Id
+import jakarta.persistence.Table
 
 @Entity
 @Table(name = "music_type")
-class MusicType(
-) {
+class MusicType {
     @Id
     val type: String? = null
 

@@ -21,13 +21,14 @@ class AuthService(
 ) {
 
     fun signUp(request: SignUpRequest): SignUpResponse {
-        if(memberRepository.existsByUsername(request.username)) throw MemberExistentException(request.username)
+        if (memberRepository.existsByUsername(request.username)) throw MemberExistentException(request.username)
         return memberRepository.save(Member(request, encoder)).toSignUpResponse()
     }
 
     fun signIn(request: SignInRequest): SignInResponse {
-        val member = memberRepository.findByUsername(request.username) ?: throw UsernameNotFoundException("Member not found")
-        if(!encoder.matches(request.password, member.password)) throw BadCredentialsException("Incorrect password")
+        val member =
+            memberRepository.findByUsername(request.username) ?: throw UsernameNotFoundException("Member not found")
+        if (!encoder.matches(request.password, member.password)) throw BadCredentialsException("Incorrect password")
         val accessToken = jwtUtility.generateAccessToken(member.id!!, member.username)
 
         return member.toSignInResponse(accessToken)

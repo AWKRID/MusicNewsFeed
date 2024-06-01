@@ -4,6 +4,6 @@ data class UpdatePostRequest(
     val title: String,
     val musicUrl: String,
     val content: String,
-    val tags: List<String>,
     val musicType: String,
+    val tags: List<String>
 )

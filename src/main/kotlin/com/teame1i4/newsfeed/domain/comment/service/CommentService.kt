@@ -1,11 +1,11 @@
 package com.teame1i4.newsfeed.domain.comment.service
 
-import com.teame1i4.newsfeed.domain.exception.ModelNotFoundException
 import com.teame1i4.newsfeed.domain.comment.dto.request.CreateCommentRequest
 import com.teame1i4.newsfeed.domain.comment.dto.request.UpdateCommentRequest
 import com.teame1i4.newsfeed.domain.comment.dto.response.CommentResponse
 import com.teame1i4.newsfeed.domain.comment.model.Comment
 import com.teame1i4.newsfeed.domain.comment.repository.CommentRepository
+import com.teame1i4.newsfeed.domain.exception.ModelNotFoundException
 import com.teame1i4.newsfeed.domain.exception.UnauthorizedAccessException
 import com.teame1i4.newsfeed.domain.member.adapter.MemberDetails
 import com.teame1i4.newsfeed.domain.member.repository.MemberRepository
@@ -14,7 +14,6 @@ import jakarta.transaction.Transactional
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
-
 
 @Service
 class CommentService(

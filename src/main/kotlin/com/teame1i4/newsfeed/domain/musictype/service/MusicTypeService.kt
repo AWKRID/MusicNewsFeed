@@ -14,5 +14,4 @@ class MusicTypeService(
         val musicType: List<MusicType> = musicTypeRepository.findAllByOrderByCountPostDesc()
         return musicType.map { it.toResponse() }
     }
-
 }

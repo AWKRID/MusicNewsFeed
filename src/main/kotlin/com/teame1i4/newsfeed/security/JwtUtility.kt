@@ -14,7 +14,7 @@ import java.time.Instant
 import java.util.*
 
 @Component
-class JwtUtility (
+class JwtUtility(
     @Value("\${jwt.issuer}")
     private val issuer: String,
 
@@ -35,15 +35,15 @@ class JwtUtility (
 
     private fun generateToken(id: Long, name: String, expirationPeriod: Duration): String {
         val claims = Jwts.claims()
-            .add( mapOf("id" to id, "name" to name) )
+            .add(mapOf("id" to id, "name" to name))
             .build()
         val now = Instant.now()
 
         return Jwts.builder()
-                .issuer(issuer).claims(claims)
-                .issuedAt(Date.from(now)).expiration((Date.from(now.plus(expirationPeriod))))
-                .signWith(key)
-                .compact()
+            .issuer(issuer).claims(claims)
+            .issuedAt(Date.from(now)).expiration((Date.from(now.plus(expirationPeriod))))
+            .signWith(key)
+            .compact()
     }
 
     fun generateAccessToken(id: Long, name: String): String =

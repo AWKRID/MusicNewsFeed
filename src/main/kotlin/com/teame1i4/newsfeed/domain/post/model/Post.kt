@@ -9,7 +9,6 @@ import com.teame1i4.newsfeed.domain.post.dto.UpdatePostRequest
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
-import org.springframework.data.repository.findByIdOrNull
 import java.time.LocalDateTime
 
 
@@ -29,7 +28,6 @@ class Post(
 
     @Column
     var content: String,
-
 
     @Column
     var tags: String,
@@ -128,8 +126,10 @@ fun Post.toResponse(member: Member, hasUpvoted: Boolean): PostResponse {
     )
 }
 
-fun Post.toWithCommentResponse(member: Member, commentResponses: List<CommentResponse>,
-                               hasUpvoted: Boolean): PostWithCommentResponse {
+fun Post.toWithCommentResponse(
+    member: Member, commentResponses: List<CommentResponse>,
+    hasUpvoted: Boolean
+): PostWithCommentResponse {
     return PostWithCommentResponse(
         id = id!!,
         title = title,
