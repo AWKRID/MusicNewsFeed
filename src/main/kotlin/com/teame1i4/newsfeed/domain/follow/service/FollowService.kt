@@ -28,7 +28,7 @@ class FollowService(
             followerMemberId
         ) // 요청 당하는 member가 있나 확인
 
-        if (followRepository.existsByMemberId(member.id)) throw IllegalArgumentException("팔로우 신청을 이미 함") // 예외처리 수정
+        if (followRepository.existsByMemberIdAndFollowerMemberId(member.id,followerMemberId)) throw IllegalArgumentException("팔로우 신청을 이미 함") // 예외처리 수정
 
         val follow: Follow = Follow(member.id, followerMemberId)
 
