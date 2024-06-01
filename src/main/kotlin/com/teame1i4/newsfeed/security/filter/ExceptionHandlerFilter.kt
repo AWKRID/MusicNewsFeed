@@ -7,6 +7,7 @@ import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.HttpStatus
+import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 
@@ -21,6 +22,9 @@ class ExceptionHandlerFilter: OncePerRequestFilter() {
             response.sendError(HttpStatus.UNAUTHORIZED.value(), "Malformed JWT provided")
         } catch (e: ExpiredJwtException) {
             response.sendError(HttpStatus.UNAUTHORIZED.value(), "Expired JWT provided")
+        } catch (e: UsernameNotFoundException) {
+            response.sendError(HttpStatus.NOT_FOUND.value(), e.message ?: "User not found")
         }
+
     }
 }
