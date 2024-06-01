@@ -33,30 +33,28 @@ class JwtUtility (
             Jwts.parser().verifyWith(key).build().parseSignedClaims(token)
         }
 
-    private fun generateToken(id: Long, role: String, expirationPeriod: Duration): String {
-        var claims = Jwts.claims()
-            .add(mapOf("id" to id, "role" to role))
+    private fun generateToken(id: Long, name: String, expirationPeriod: Duration): String {
+        val claims = Jwts.claims()
+            .add( mapOf("id" to id, "name" to name) )
             .build()
-
         val now = Instant.now()
 
         return Jwts.builder()
-            .issuer(issuer).claims(claims)
-            .issuedAt(Date.from(now)).expiration((Date.from(now.plus(expirationPeriod))))
-            .signWith(key)
-            .compact()
+                .issuer(issuer).claims(claims)
+                .issuedAt(Date.from(now)).expiration((Date.from(now.plus(expirationPeriod))))
+                .signWith(key)
+                .compact()
     }
 
-    fun generateAccessToken(id: Long, role: String): String =
-        generateToken(id, role, Duration.ofHours(accessTokenExpirationHours.toLong()))
+    fun generateAccessToken(id: Long, name: String): String =
+        generateToken(id, name, Duration.ofHours(accessTokenExpirationHours.toLong()))
 
     fun parseClaims(token: String): Claims =
-        Jwts.parser().verifyWith(key).build()
-            .parseSignedClaims(token).payload
+        validateToken(token).getOrNull()!!.payload
 
     fun resolveToken(request: HttpServletRequest): String? =
         request.getHeader("Authorization").let { bearerToken ->
-            if(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer")) bearerToken.substring(7)
+            if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer")) bearerToken.substring(7)
             else null
         }
 }
