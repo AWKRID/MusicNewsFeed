@@ -8,13 +8,13 @@ import jakarta.persistence.Table
 
 @Entity
 @Table(name = "music_type")
-class MusicType {
-
+class MusicType(
     @Id
-    val type: String? = null
+    val type: String,
 
     @Column(name = "count_post", nullable = false)
-    var countPost: Long = 0
+    var countPost: Long
+) {
 
     fun updateCountPost(increase: Boolean) {
         when (increase) {
@@ -22,10 +22,9 @@ class MusicType {
             false -> countPost--
         }
     }
-
 }
 
 fun MusicType.toResponse(): MusicTypeCountResponse = MusicTypeCountResponse(
-        musicType = type!!,
-        count = countPost
-    )
+    musicType = type,
+    count = countPost
+)
