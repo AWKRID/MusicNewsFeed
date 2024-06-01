@@ -21,16 +21,16 @@ class FollowService(
     @PreAuthorize("hasRole('USER')")
     fun createFollow(member: MemberDetails, followerMemberId: Long): FollowResponse {
 
-        if (member.memberId == followerMemberId) throw IllegalArgumentException("팔로우 신청 member와 당하는 member가 같음") // 예외처리 수정
+        if (member.id == followerMemberId) throw IllegalArgumentException("팔로우 신청 member와 당하는 member가 같음") // 예외처리 수정
 
         if (!memberRepository.existsById(followerMemberId)) throw ModelNotFoundException(
             "member",
             followerMemberId
         ) // 요청 당하는 member가 있나 확인
 
-        if (followRepository.existsByMemberId(member.memberId)) throw IllegalArgumentException("팔로우 신청을 이미 함") // 예외처리 수정
+        if (followRepository.existsByMemberId(member.id)) throw IllegalArgumentException("팔로우 신청을 이미 함") // 예외처리 수정
 
-        val follow: Follow = Follow(member.memberId, followerMemberId)
+        val follow: Follow = Follow(member.id, followerMemberId)
 
         followRepository.save(follow)
 
@@ -41,13 +41,12 @@ class FollowService(
     @PreAuthorize("hasRole('USER')")
     fun deleteFollow(member: MemberDetails, id: Long): Unit {
 
-        val follow: Follow = followRepository.findByMemberIdAndFollowerMemberId(member.memberId, id)
+        val follow: Follow = followRepository.findByMemberIdAndFollowerMemberId(member.id, id)
             ?: throw ModelNotFoundException("follow", id)
 
-        if (member.memberId != follow.memberId) throw UnauthorizedAccessException()
+        if (member.id != follow.memberId) throw UnauthorizedAccessException()
 
         followRepository.delete(follow)
-
     }
 
 }

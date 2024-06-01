@@ -14,8 +14,12 @@ import org.springframework.web.bind.annotation.RestController
 class MemberController(
     private val memberService: MemberService
 ) {
+
     @GetMapping("/{memberId}")
-    fun getMember(@PathVariable memberId: Long): ResponseEntity<MemberResponse> =
-        ResponseEntity.status(HttpStatus.OK)
-            .body(memberService.getMember(memberId))
+    fun getMember(
+        @PathVariable memberId: Long
+    ): ResponseEntity<MemberResponse> = ResponseEntity
+        .status(HttpStatus.OK)
+        .body(memberService.getMember(memberId))
+
 }

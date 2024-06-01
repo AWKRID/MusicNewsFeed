@@ -6,5 +6,4 @@ import org.springframework.data.jpa.repository.JpaRepository
 interface FollowRepository : JpaRepository<Follow, Long> {
     fun existsByMemberId(memberId: Long): Boolean
     fun findByMemberIdAndFollowerMemberId(memberId: Long, followerId: Long): Follow?
-
 }

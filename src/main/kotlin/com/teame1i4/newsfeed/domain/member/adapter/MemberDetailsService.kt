@@ -1,5 +1,6 @@
 package com.teame1i4.newsfeed.domain.member.adapter
 
+import com.teame1i4.newsfeed.domain.member.model.toUserDetailsParameter
 import com.teame1i4.newsfeed.domain.member.repository.MemberRepository
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
@@ -17,4 +18,5 @@ class MemberDetailsService(
             ?: throw UsernameNotFoundException("Member not found with id $id")
         return MemberDetails(member.toUserDetailsParameter())
     }
+
 }

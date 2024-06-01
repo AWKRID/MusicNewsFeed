@@ -21,7 +21,6 @@ class JwtAuthenticationFilter(
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
-        val token = jwtUtility.resolveToken(request)
 
         jwtUtility.resolveToken(request)?.let { token ->
             jwtUtility.validateToken(token).onFailure { throw it }

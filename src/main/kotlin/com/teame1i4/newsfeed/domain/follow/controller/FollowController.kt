@@ -19,17 +19,16 @@ class FollowController(
     fun createFollow(
         @AuthenticationPrincipal member: MemberDetails?,
         @RequestParam(value = "follower_member_id") followerMemberId: Long
-    ): ResponseEntity<FollowResponse> {
-        if (member == null) throw UnauthorizedAccessException()
-        return ResponseEntity.status(HttpStatus.CREATED).body(followService.createFollow(member, followerMemberId))
-    }
+    ): ResponseEntity<FollowResponse> = ResponseEntity
+        .status(HttpStatus.CREATED)
+        .body(followService.createFollow(member ?: throw UnauthorizedAccessException(), followerMemberId))
 
     @DeleteMapping("/{memberId}")
     fun deleteFollow(
         @AuthenticationPrincipal member: MemberDetails?,
         @PathVariable(value = "memberId") id: Long
-    ): ResponseEntity<Unit> {
-        if (member == null) throw UnauthorizedAccessException()
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(followService.deleteFollow(member, id))
-    }
+    ): ResponseEntity<Unit> = ResponseEntity
+        .status(HttpStatus.NO_CONTENT)
+        .body(followService.deleteFollow(member ?: throw UnauthorizedAccessException(), id))
+
 }

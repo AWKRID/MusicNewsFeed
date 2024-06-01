@@ -22,14 +22,11 @@ class ReportService(
 
     @PreAuthorize("hasRole('USER')")
     @Transactional
-    fun createReport(postId: Long, member: MemberDetails?) {
-
-        if (member == null) throw UnauthorizedAccessException()
+    fun createReport(postId: Long, member: MemberDetails) {
 
         val post = postRepository.findByIdOrNull(postId) ?: throw ModelNotFoundException("Post", postId)
         val user =
-            memberRepository.findByIdOrNull(member.memberId) ?: throw ModelNotFoundException("Member", member.memberId)
-
+            memberRepository.findByIdOrNull(member.id) ?: throw ModelNotFoundException("Member", member.id)
         if (reportRepository.existsByMemberIdAndPostId(user.id!!, postId)) throw AlreadyReportedException(
             postId, user.id!!
         )
@@ -38,4 +35,5 @@ class ReportService(
 
         reportRepository.save(Report(user, post))
     }
+
 }

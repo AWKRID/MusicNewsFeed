@@ -22,20 +22,20 @@ class UpvoteService(
     private val postRepository: PostRepository,
     private val memberRepository: MemberRepository
 ) {
+
     @PreAuthorize("hasRole('USER')")
     @Transactional
-    fun upvotePost(postId: Long, member: MemberDetails?): PostResponse {
-
-        if (member == null) throw UnauthorizedAccessException()
+    fun upvotePost(
+        member: MemberDetails,
+        postId: Long
+    ): PostResponse {
 
         val post = postRepository.findByIdOrNull(postId) ?: throw ModelNotFoundException("Post", postId)
         val user =
-            memberRepository.findByIdOrNull(member.memberId) ?: throw ModelNotFoundException("Member", member.memberId)
-
+            memberRepository.findByIdOrNull(member.id) ?: throw ModelNotFoundException("Member", member.id)
         if (upvoteRepository.existsByMemberIdAndPostId(user.id!!, postId)) throw UpvoteAlreadyExistException()
 
         upvoteRepository.save(Upvote(user, post))
-
         post.addUpvote()
 
         return post.toResponse(
@@ -46,25 +46,24 @@ class UpvoteService(
 
     @PreAuthorize("hasRole('USER')")
     @Transactional
-    fun cancelUpvote(postId: Long, member: MemberDetails?): PostResponse {
-
-        if (member == null) throw UnauthorizedAccessException()
+    fun cancelUpvote(
+        member: MemberDetails,
+        postId: Long
+    ): PostResponse {
 
         val post = postRepository.findByIdOrNull(postId) ?: throw ModelNotFoundException("Post", postId)
-
-        if (!memberRepository.existsById(member.memberId)) throw ModelNotFoundException("Member", member.memberId)
-
-        val upvote = upvoteRepository.findByMemberIdAndPostId(member.memberId, postId) ?: throw UpvoteNotFoundException(
-            postId, member.memberId
+        if (!memberRepository.existsById(member.id)) throw ModelNotFoundException("Member", member.id)
+        val upvote = upvoteRepository.findByMemberIdAndPostId(member.id, postId) ?: throw UpvoteNotFoundException(
+            postId, member.id
         )
 
         post.removeUpvote()
-
         upvoteRepository.delete(upvote)
 
         return post.toResponse(
-            memberRepository.findByIdOrNull(member.memberId)!!,
+            memberRepository.findByIdOrNull(member.id)!!,
             false
         )
     }
+
 }

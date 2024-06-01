@@ -1,6 +1,6 @@
 package com.teame1i4.newsfeed.domain.musictype.model
 
-import com.teame1i4.newsfeed.domain.musictype.dto.MusicTypeCountResponse
+import com.teame1i4.newsfeed.domain.musictype.dto.response.MusicTypeCountResponse
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
@@ -9,6 +9,7 @@ import jakarta.persistence.Table
 @Entity
 @Table(name = "music_type")
 class MusicType {
+
     @Id
     val type: String? = null
 
@@ -21,11 +22,10 @@ class MusicType {
             false -> countPost--
         }
     }
+
 }
 
-fun MusicType.toResponse(): MusicTypeCountResponse {
-    return MusicTypeCountResponse(
+fun MusicType.toResponse(): MusicTypeCountResponse = MusicTypeCountResponse(
         musicType = type!!,
         count = countPost
     )
-}
