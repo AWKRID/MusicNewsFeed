@@ -3,6 +3,7 @@ package com.teame1i4.newsfeed.domain.post.model
 import com.teame1i4.newsfeed.domain.comment.dto.response.CommentResponse
 import com.teame1i4.newsfeed.domain.comment.model.Comment
 import com.teame1i4.newsfeed.domain.member.model.Member
+import com.teame1i4.newsfeed.domain.member.model.toResponse
 import com.teame1i4.newsfeed.domain.post.dto.PostResponse
 import com.teame1i4.newsfeed.domain.post.dto.PostWithCommentResponse
 import com.teame1i4.newsfeed.domain.post.dto.UpdatePostRequest
@@ -52,6 +53,7 @@ class Post(
     var commentCount: Long = 0
 
 ) {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
@@ -66,6 +68,7 @@ class Post(
 
     @OneToMany(mappedBy = "post")
     var comments: MutableList<Comment> = mutableListOf()
+
 
     fun updatePost(request: UpdatePostRequest, musicUrl: String) {
         this.title = request.title
@@ -106,10 +109,13 @@ class Post(
     fun view() {
         viewCount += 1
     }
+
 }
 
-fun Post.toResponse(member: Member, hasUpvoted: Boolean): PostResponse {
-    return PostResponse(
+fun Post.toResponse(
+    member: Member,
+    hasUpvoted: Boolean
+): PostResponse = PostResponse(
         id = id!!,
         title = title,
         content = content,
@@ -124,12 +130,12 @@ fun Post.toResponse(member: Member, hasUpvoted: Boolean): PostResponse {
         commentCount = commentCount,
         hasUpvoted = hasUpvoted
     )
-}
 
 fun Post.toWithCommentResponse(
-    member: Member, commentResponses: List<CommentResponse>, hasUpvoted: Boolean
-): PostWithCommentResponse {
-    return PostWithCommentResponse(
+    member: Member,
+    commentResponses: List<CommentResponse>,
+    hasUpvoted: Boolean
+): PostWithCommentResponse = PostWithCommentResponse(
         id = id!!,
         title = title,
         content = content,
@@ -144,4 +150,3 @@ fun Post.toWithCommentResponse(
         comments = commentResponses,
         hasUpvoted = hasUpvoted
     )
-}

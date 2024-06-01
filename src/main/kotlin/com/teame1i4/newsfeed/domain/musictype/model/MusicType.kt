@@ -22,10 +22,10 @@ class MusicType {
             false -> countPost--
         }
     }
+
 }
 
-fun MusicType.toResponse(): MusicTypeCountResponse =
-    MusicTypeCountResponse(
+fun MusicType.toResponse(): MusicTypeCountResponse = MusicTypeCountResponse(
         musicType = type!!,
         count = countPost
     )

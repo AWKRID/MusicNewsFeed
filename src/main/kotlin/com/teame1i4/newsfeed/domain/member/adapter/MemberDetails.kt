@@ -13,9 +13,10 @@ class MemberDetails(
 ) : User(nickname, pw, arrayListOf<GrantedAuthority>(SimpleGrantedAuthority("ROLE_$role"))) {
 
     constructor(param: UserDetailsParameter) : this(
-        id = param.memberId,
+        id = param.id,
         nickname = param.nickname,
         pw = param.password,
         role = param.role
     )
+
 }

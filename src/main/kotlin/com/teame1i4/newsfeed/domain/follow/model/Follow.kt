@@ -12,11 +12,18 @@ class Follow(
 
     @Column(name = "follower_member_id", nullable = false)
     val followerMemberId: Long
+
 ) {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
+
 }
 
-fun Follow.toResponse(): FollowResponse = FollowResponse(id = id!!, memberId, followerMemberId)
+fun Follow.toResponse(): FollowResponse =
+    FollowResponse(
+        id = id!!,
+        memberId = memberId,
+        followerMemberId = followerMemberId
+    )

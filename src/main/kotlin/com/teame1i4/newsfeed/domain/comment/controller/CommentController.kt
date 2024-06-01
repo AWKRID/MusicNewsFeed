@@ -16,12 +16,14 @@ import org.springframework.web.bind.annotation.*
 class CommentController(
     private val commentService: CommentService
 ) {
+
     @GetMapping
     fun getCommentList(
         @PathVariable postId: Long
     ): ResponseEntity<List<CommentResponse>> = ResponseEntity
         .status(HttpStatus.OK)
         .body(commentService.getCommentList(postId))
+
 
     @PostMapping
     fun createComment(
@@ -30,7 +32,8 @@ class CommentController(
         @RequestBody request: CreateCommentRequest
     ): ResponseEntity<CommentResponse> = ResponseEntity
         .status(HttpStatus.CREATED)
-        .body(commentService.createComment(postId, request, member ?: throw UnauthorizedAccessException()))
+        .body(commentService.createComment(member ?: throw UnauthorizedAccessException(), postId, request,))
+
 
     @PutMapping("/{commentId}")
     fun updateComment(
@@ -40,7 +43,8 @@ class CommentController(
         @RequestBody request: UpdateCommentRequest
     ): ResponseEntity<CommentResponse> = ResponseEntity
         .status(HttpStatus.OK)
-        .body(commentService.updateComment(postId, commentId, request, member ?: throw UnauthorizedAccessException()))
+        .body(commentService.updateComment(member ?: throw UnauthorizedAccessException(), postId, commentId, request))
+
 
     @DeleteMapping("/{commentId}")
     fun deleteComment(
@@ -49,6 +53,6 @@ class CommentController(
         @PathVariable commentId: Long,
     ): ResponseEntity<Unit> = ResponseEntity
         .status(HttpStatus.NO_CONTENT)
-        .body(commentService.deleteComment(postId, commentId, member ?: throw UnauthorizedAccessException()))
+        .body(commentService.deleteComment(member ?: throw UnauthorizedAccessException(), postId, commentId,))
 
 }

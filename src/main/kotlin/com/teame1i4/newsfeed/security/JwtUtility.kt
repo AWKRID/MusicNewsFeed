@@ -15,6 +15,7 @@ import java.util.*
 
 @Component
 class JwtUtility(
+
     @Value("\${jwt.issuer}")
     private val issuer: String,
 
@@ -34,6 +35,7 @@ class JwtUtility(
         }
 
     private fun generateToken(id: Long, name: String, expirationPeriod: Duration): String {
+
         val claims = Jwts.claims()
             .add(mapOf("id" to id, "name" to name))
             .build()

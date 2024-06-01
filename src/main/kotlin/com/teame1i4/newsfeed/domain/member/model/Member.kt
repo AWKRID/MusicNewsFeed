@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder
 @Entity
 @Table(name = "member")
 class Member(
+
     @Column(name = "username", unique = true, nullable = false)
     var username: String,
 
@@ -20,6 +21,7 @@ class Member(
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     var role: MemberRole = MemberRole.USER
+
 ) {
 
     constructor(request: SignUpRequest, encoder: PasswordEncoder) :
@@ -42,7 +44,7 @@ fun Member.toResponse(): MemberResponse =
 
 fun Member.toUserDetailsParameter(): UserDetailsParameter =
     UserDetailsParameter(
-        memberId = id!!,
+        id = id!!,
         nickname = username,
         password = password,
         role = role.toString()

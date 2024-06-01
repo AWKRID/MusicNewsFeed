@@ -15,7 +15,8 @@ class MemberService(
 ) {
 
     fun getMember(
-        memberId: Long
+        id: Long
     ): MemberResponse =
-        (memberRepository.findByIdOrNull(memberId) ?: throw ModelNotFoundException("Member", memberId)).toResponse()
+        (memberRepository.findByIdOrNull(id) ?: throw ModelNotFoundException("Member", id)).toResponse()
+
 }

@@ -14,6 +14,7 @@ import java.time.LocalDateTime
 @Entity
 @Table(name = "comment")
 class Comment(
+
     @Column(name = "content", nullable = false)
     var content: String,
 
@@ -23,7 +24,9 @@ class Comment(
     @ManyToOne
     @JoinColumn(name = "post_id")
     val post: Post
+
 ) {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
@@ -35,12 +38,14 @@ class Comment(
     @LastModifiedDate
     @Column(name = "updated_at", nullable = false)
     var updatedAt: LocalDateTime = LocalDateTime.now()
+
 }
 
-fun Comment.toResponse(member: Member): CommentResponse = CommentResponse(
-    id = id!!,
-    member = member.toResponse(),
-    content = content,
-    createdAt = createdAt,
-    updatedAt = updatedAt
-)
+fun Comment.toResponse(member: Member): CommentResponse =
+    CommentResponse(
+        id = id!!,
+        member = member.toResponse(),
+        content = content,
+        createdAt = createdAt,
+        updatedAt = updatedAt
+    )

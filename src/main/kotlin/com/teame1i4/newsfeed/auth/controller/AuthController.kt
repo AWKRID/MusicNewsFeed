@@ -31,4 +31,5 @@ class AuthController(
     ): ResponseEntity<SignInResponse> = ResponseEntity
         .status(HttpStatus.OK)
         .body(authService.signIn(request))
+
 }

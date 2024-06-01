@@ -14,10 +14,12 @@ class Report(
 
     @ManyToOne
     @JoinColumn(name = "post_id")
-    var post: Post,
+    var post: Post
 
-    ) {
+) {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
+
 }
