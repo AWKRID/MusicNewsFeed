@@ -28,12 +28,6 @@ class JwtUtility(
 
     private val key = Keys.hmacShaKeyFor(secret.toByteArray(StandardCharsets.UTF_8))
 
-
-    fun validateToken(token: String): Result<Jws<Claims>> =
-        kotlin.runCatching {
-            Jwts.parser().verifyWith(key).build().parseSignedClaims(token)
-        }
-
     private fun generateToken(id: Long, name: String, expirationPeriod: Duration): String {
 
         val claims = Jwts.claims()
@@ -51,12 +45,17 @@ class JwtUtility(
     fun generateAccessToken(id: Long, name: String): String =
         generateToken(id, name, Duration.ofHours(accessTokenExpirationHours.toLong()))
 
+    fun validateToken(token: String): Result<Jws<Claims>> =
+        kotlin.runCatching {
+            Jwts.parser().verifyWith(key).build().parseSignedClaims(token)
+        }
+
     fun parseClaims(token: String): Claims =
         validateToken(token).getOrNull()!!.payload
 
     fun resolveToken(request: HttpServletRequest): String? =
         request.getHeader("Authorization").let { bearerToken ->
-            if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer")) bearerToken.substring(7)
+            if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) bearerToken.substring(7)
             else null
         }
 }
