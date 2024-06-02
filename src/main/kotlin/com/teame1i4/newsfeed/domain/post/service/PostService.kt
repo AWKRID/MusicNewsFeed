@@ -94,7 +94,7 @@ class PostService(
         val post = postRepository.findByIdOrNull(postId) ?: throw ModelNotFoundException("Post", postId)
         if (post.memberId != member.id) throw UnauthorizedAccessException()
         var musicType: MusicType =
-            musicTypeRepository.findByIdOrNull(request.musicType) ?: throw TypeNotFoundException(request.musicType)
+            musicTypeRepository.findByIdOrNull(post.musicType) ?: throw TypeNotFoundException(request.musicType)
 
         musicType.updateCountPost(false)
         musicTypeRepository.save(musicType)
