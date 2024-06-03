@@ -21,14 +21,9 @@ class PostController(
     @GetMapping("/feeds")
     fun getFeeds(
         @AuthenticationPrincipal member : MemberDetails?
-    ) : ResponseEntity<List<PostResponse>>{
-
-        if (member == null) throw UnauthorizedAccessException()
-
-        return ResponseEntity
+    ) : ResponseEntity<List<PostResponse>> = ResponseEntity
             .status(HttpStatus.OK)
-            .body(postService.getFeeds(member))
-    }
+            .body(postService.getFeeds(member ?: throw UnauthorizedAccessException()))
 
     @GetMapping
     fun getPosts(
