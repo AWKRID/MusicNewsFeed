@@ -9,4 +9,4 @@ data class CommentResponse(
     val content: String,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime
-    )
+)

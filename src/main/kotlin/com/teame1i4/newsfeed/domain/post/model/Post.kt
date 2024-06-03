@@ -3,13 +3,13 @@ package com.teame1i4.newsfeed.domain.post.model
 import com.teame1i4.newsfeed.domain.comment.dto.response.CommentResponse
 import com.teame1i4.newsfeed.domain.comment.model.Comment
 import com.teame1i4.newsfeed.domain.member.model.Member
+import com.teame1i4.newsfeed.domain.member.model.toResponse
 import com.teame1i4.newsfeed.domain.post.dto.PostResponse
 import com.teame1i4.newsfeed.domain.post.dto.PostWithCommentResponse
 import com.teame1i4.newsfeed.domain.post.dto.UpdatePostRequest
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
-import org.springframework.data.repository.findByIdOrNull
 import java.time.LocalDateTime
 
 
@@ -18,56 +18,57 @@ import java.time.LocalDateTime
 @Table(name = "post")
 class Post(
 
-    @Column
+    @Column(name = "title")
     var title: String,
 
-    @Column
+    @Column(name = "member_id")
     var memberId: Long,
 
-    @Column
+    @Column(name = "music_url")
     var musicUrl: String,
 
-    @Column
+    @Column(name = "content")
     var content: String,
 
-
-    @Column
+    @Column(name = "tags")
     var tags: String,
 
     @Column(name = "music_type_id")
     var musicType: String,
 
-    @Column
+    @Column(name = "view_count")
     var viewCount: Long = 0,
 
     @Enumerated(EnumType.STRING)
-    @Column
+    @Column(name = "post_status")
     var postStatus: PostStatus = PostStatus.PUBLIC,
 
-    @Column
+    @Column(name = "upvote_count")
     var upvoteCount: Long = 0,
 
-    @Column
+    @Column(name = "report_count")
     var reportCount: Long = 0,
 
-    @Column
+    @Column(name = "comment_count")
     var commentCount: Long = 0
 
 ) {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
 
     @CreatedDate
-    @Column(updatable = false, nullable = false)
+    @Column(name = "created_at", updatable = false, nullable = false)
     var createdAt: LocalDateTime = LocalDateTime.now()
 
-    @Column(nullable = false)
+    @Column(name = "updated_at", nullable = false)
     var updatedAt: LocalDateTime = LocalDateTime.now()
 
 
     @OneToMany(mappedBy = "post")
     var comments: MutableList<Comment> = mutableListOf()
+
 
     fun updatePost(request: UpdatePostRequest, musicUrl: String) {
         this.title = request.title
@@ -78,7 +79,7 @@ class Post(
         this.updatedAt = LocalDateTime.now()
     }
 
-    fun createComment(comment: Comment) {
+    fun addComment(comment: Comment) {
         this.comments.add(comment)
         commentCount += 1
     }
@@ -108,10 +109,13 @@ class Post(
     fun view() {
         viewCount += 1
     }
+
 }
 
-fun Post.toResponse(member: Member, hasUpvoted: Boolean): PostResponse {
-    return PostResponse(
+fun Post.toResponse(
+    member: Member,
+    hasUpvoted: Boolean
+): PostResponse = PostResponse(
         id = id!!,
         title = title,
         content = content,
@@ -126,11 +130,12 @@ fun Post.toResponse(member: Member, hasUpvoted: Boolean): PostResponse {
         commentCount = commentCount,
         hasUpvoted = hasUpvoted
     )
-}
 
-fun Post.toWithCommentResponse(member: Member, commentResponses: List<CommentResponse>,
-                               hasUpvoted: Boolean): PostWithCommentResponse {
-    return PostWithCommentResponse(
+fun Post.toWithCommentResponse(
+    member: Member,
+    commentResponses: List<CommentResponse>,
+    hasUpvoted: Boolean
+): PostWithCommentResponse = PostWithCommentResponse(
         id = id!!,
         title = title,
         content = content,
@@ -145,4 +150,3 @@ fun Post.toWithCommentResponse(member: Member, commentResponses: List<CommentRes
         comments = commentResponses,
         hasUpvoted = hasUpvoted
     )
-}

@@ -9,11 +9,17 @@ import org.springframework.stereotype.Component
 import org.springframework.web.servlet.HandlerExceptionResolver
 
 @Component
-class JwtAuthenticationEntryPoint (
+class JwtAuthenticationEntryPoint(
     @Qualifier("handlerExceptionResolver")
     private val resolver: HandlerExceptionResolver
-): AuthenticationEntryPoint {
-    override fun commence(request: HttpServletRequest?, response: HttpServletResponse?, authException: AuthenticationException?) {
+) : AuthenticationEntryPoint {
+
+    override fun commence(
+        request: HttpServletRequest?,
+        response: HttpServletResponse?,
+        authException: AuthenticationException?
+    ) {
+
         resolver.resolveException(request!!, response!!, null, authException!!)
     }
 }

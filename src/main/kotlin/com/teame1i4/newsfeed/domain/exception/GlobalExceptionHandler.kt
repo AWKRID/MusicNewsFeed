@@ -12,56 +12,57 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 class GlobalExceptionHandler {
 
     @ExceptionHandler(ModelNotFoundException::class)
-    fun handleExceptionModelNotFound(e : ModelNotFoundException) : ResponseEntity<ErrorResponse> {
+    fun handleExceptionModelNotFound(e: ModelNotFoundException): ResponseEntity<ErrorResponse> {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponse(e.message))
     }
+
     @ExceptionHandler(TypeNotFoundException::class)
-    fun handleExceptionTypeNotFound(e : TypeNotFoundException) : ResponseEntity<ErrorResponse> {
+    fun handleExceptionTypeNotFound(e: TypeNotFoundException): ResponseEntity<ErrorResponse> {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponse(e.message))
     }
 
     @ExceptionHandler(IllegalStateException::class)
-    fun handleExceptionIllegal(e : IllegalStateException) : ResponseEntity<ErrorResponse> {
+    fun handleExceptionIllegal(e: IllegalStateException): ResponseEntity<ErrorResponse> {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ErrorResponse(e.message))
     }
 
     @ExceptionHandler(IllegalArgumentException::class)
-    fun handleExceptionIllegalArgument(e: IllegalArgumentException) : ResponseEntity<ErrorResponse> {
+    fun handleExceptionIllegalArgument(e: IllegalArgumentException): ResponseEntity<ErrorResponse> {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse(e.message))
     }
 
     @ExceptionHandler(AlreadyReportedException::class)
-    fun handleAlreadyReported(e: AlreadyReportedException) : ResponseEntity<ErrorResponse> {
+    fun handleAlreadyReported(e: AlreadyReportedException): ResponseEntity<ErrorResponse> {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse(e.message))
     }
 
     @ExceptionHandler(UpvoteNotFoundException::class)
-    fun handleUpvoteNotFound(e: UpvoteNotFoundException) : ResponseEntity<ErrorResponse> {
+    fun handleUpvoteNotFound(e: UpvoteNotFoundException): ResponseEntity<ErrorResponse> {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse(e.message))
     }
 
     @ExceptionHandler(YouTubeUrlNotValidException::class)
-    fun handleYoutubeUrlNotValid(e: YouTubeUrlNotValidException) : ResponseEntity<ErrorResponse> {
+    fun handleYoutubeUrlNotValid(e: YouTubeUrlNotValidException): ResponseEntity<ErrorResponse> {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse(e.message))
     }
 
     @ExceptionHandler(BadCredentialsException::class)
-    fun handleBadCredentialsException(e: BadCredentialsException) : ResponseEntity<ErrorResponse> {
+    fun handleBadCredentialsException(e: BadCredentialsException): ResponseEntity<ErrorResponse> {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse(e.message))
     }
 
     @ExceptionHandler(UnauthorizedAccessException::class)
-    fun handleUnauthorizedAccessException(e: UnauthorizedAccessException) : ResponseEntity<ErrorResponse> {
+    fun handleUnauthorizedAccessException(e: UnauthorizedAccessException): ResponseEntity<ErrorResponse> {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorResponse(e.message))
     }
 
     @ExceptionHandler(UpvoteAlreadyExistException::class)
-    fun handleUUpvoteAlreadyExistException(e: UpvoteAlreadyExistException) : ResponseEntity<ErrorResponse> {
+    fun handleUUpvoteAlreadyExistException(e: UpvoteAlreadyExistException): ResponseEntity<ErrorResponse> {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorResponse(e.message))
     }
 
     @ExceptionHandler(UsernameNotFoundException::class)
-    fun handleUsernameNotFoundException(e: UsernameNotFoundException) : ResponseEntity<ErrorResponse> {
+    fun handleUsernameNotFoundException(e: UsernameNotFoundException): ResponseEntity<ErrorResponse> {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponse(e.message))
     }
 }

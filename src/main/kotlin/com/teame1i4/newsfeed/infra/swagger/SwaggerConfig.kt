@@ -13,12 +13,16 @@ class SwaggerConfig {
 
     @Bean
     fun openAPI(): OpenAPI = OpenAPI()
-        .components(Components()
-            .addSecuritySchemes("authorization", SecurityScheme()
-                .name("authorization")
-                .type(SecurityScheme.Type.HTTP)
-                .scheme("bearer")
-                .bearerFormat("JWT")))
+        .components(
+            Components()
+                .addSecuritySchemes(
+                    "authorization", SecurityScheme()
+                        .name("authorization")
+                        .type(SecurityScheme.Type.HTTP)
+                        .scheme("bearer")
+                        .bearerFormat("JWT")
+                )
+        )
         .addSecurityItem(SecurityRequirement().addList("authorization"))
         .info(
             Info()

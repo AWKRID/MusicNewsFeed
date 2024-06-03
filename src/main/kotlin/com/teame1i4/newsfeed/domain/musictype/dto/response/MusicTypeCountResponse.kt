@@ -1,4 +1,4 @@
-package com.teame1i4.newsfeed.domain.musictype.dto
+package com.teame1i4.newsfeed.domain.musictype.dto.response
 
 data class MusicTypeCountResponse(
     val musicType: String,

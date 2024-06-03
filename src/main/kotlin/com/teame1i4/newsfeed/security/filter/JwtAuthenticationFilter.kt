@@ -14,10 +14,13 @@ import org.springframework.web.filter.OncePerRequestFilter
 class JwtAuthenticationFilter(
     private val memberDetailsService: MemberDetailsService,
     private val jwtUtility: JwtUtility
-): OncePerRequestFilter() {
+) : OncePerRequestFilter() {
 
-    override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, filterChain: FilterChain) {
-        val token = jwtUtility.resolveToken(request)
+    override fun doFilterInternal(
+        request: HttpServletRequest,
+        response: HttpServletResponse,
+        filterChain: FilterChain
+    ) {
 
         jwtUtility.resolveToken(request)?.let { token ->
             jwtUtility.validateToken(token).onFailure { throw it }

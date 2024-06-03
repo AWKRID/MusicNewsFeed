@@ -1,6 +1,7 @@
 package com.teame1i4.newsfeed.domain.post.controller
 
 
+import com.teame1i4.newsfeed.domain.exception.UnauthorizedAccessException
 import com.teame1i4.newsfeed.domain.member.adapter.MemberDetails
 import com.teame1i4.newsfeed.domain.post.dto.CreatePostRequest
 import com.teame1i4.newsfeed.domain.post.dto.PostResponse
@@ -17,57 +18,58 @@ import org.springframework.web.bind.annotation.*
 class PostController(
     private val postService: PostService
 ) {
+    @GetMapping("/feeds")
+    fun getFeeds(
+        @AuthenticationPrincipal member : MemberDetails?
+    ) : ResponseEntity<List<PostResponse>> = ResponseEntity
+            .status(HttpStatus.OK)
+            .body(postService.getFeeds(member ?: throw UnauthorizedAccessException()))
 
-    @GetMapping("")
+    @GetMapping
     fun getPosts(
         @AuthenticationPrincipal member: MemberDetails?,
         @RequestParam(required = false, value = "tag") tag: String?,
         @RequestParam(required = false, name = "title") title: String?,
         @RequestParam(required = false, name = "music_type") musicType: String?,
         @RequestParam(required = false, name = "memberId") memberId: Long?
-    ): ResponseEntity<List<PostResponse>> {
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .body(postService.getPosts(tag, title, musicType, memberId, member))
-    }
+    ): ResponseEntity<List<PostResponse>> = ResponseEntity
+        .status(HttpStatus.OK)
+        .body(postService.getPosts(member, tag, title, musicType, memberId))
 
     @GetMapping("/{postId}")
-    fun getPost(@AuthenticationPrincipal member: MemberDetails?,
-                @PathVariable postId: Long): ResponseEntity<PostWithCommentResponse> {
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .body(postService.getPostById(postId, member))
-    }
+    fun getPost(
+        @AuthenticationPrincipal member: MemberDetails?,
+        @PathVariable postId: Long
+    ): ResponseEntity<PostWithCommentResponse> = ResponseEntity
+        .status(HttpStatus.OK)
+        .body(postService.getPostById(member, postId))
 
 
     @PostMapping
     fun createPost(
         @AuthenticationPrincipal member: MemberDetails?,
-        @RequestBody createPostRequest: CreatePostRequest): ResponseEntity<PostResponse> {
-        return ResponseEntity
-            .status(HttpStatus.CREATED)
-            .body(postService.createPost(createPostRequest, member))
-    }
+        @RequestBody createPostRequest: CreatePostRequest
+    ): ResponseEntity<PostResponse> = ResponseEntity
+        .status(HttpStatus.CREATED)
+        .body(postService.createPost(member ?: throw UnauthorizedAccessException(), createPostRequest))
+
 
     @DeleteMapping("/{postId}")
     fun deletePost(
         @AuthenticationPrincipal member: MemberDetails?,
-        @PathVariable(value = "postId") id: Long): ResponseEntity<Unit> {
-        return ResponseEntity
-            .status(HttpStatus.NO_CONTENT)
-            .body(postService.deletePost(id, member))
-    }
+        @PathVariable postId: Long
+    ): ResponseEntity<Unit> = ResponseEntity
+        .status(HttpStatus.NO_CONTENT)
+        .body(postService.deletePost(member ?: throw UnauthorizedAccessException(), postId))
+
 
     @PutMapping("/{postId}")
     fun updatePost(
         @AuthenticationPrincipal member: MemberDetails?,
         @PathVariable postId: Long,
         @RequestBody updatePostRequest: UpdatePostRequest
-    ): ResponseEntity<PostResponse> {
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .body(postService.updatePost(postId, updatePostRequest, member))
-    }
-
+    ): ResponseEntity<PostResponse> = ResponseEntity
+        .status(HttpStatus.OK)
+        .body(postService.updatePost(member ?: throw UnauthorizedAccessException(), postId, updatePostRequest))
 
 }
